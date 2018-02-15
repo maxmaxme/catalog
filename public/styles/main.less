@@ -2,16 +2,83 @@ body {
 
 }
 
+@default-grey-color: #8c8c8c;
+@default-black-color: #282828;
+
 .container {
+
+  font-family: "Helvetica", "Arial", sans-serif;
 
   width: 100%;
   max-width: 1300px;
   margin: 10px auto 5px;
 
-  display: grid;
-  grid-gap: 5px;
-  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  .goods {
+
+    margin-top: 10px;
+
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+
+    .good_item {
+
+    }
+    .good_more_button {
+
+      cursor: pointer;
+      color: @default-grey-color;
+
+      .plus {
+        background: #cecece;
+        text-align: center;
+        height: 300px;
+        line-height: 250px;
+        font-size: 300px;
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+
+  .order {
+
+    a {
+
+      color: @default-grey-color;
+      text-decoration: none;
+
+      &.selected {
+        color: @default-black-color;
+
+        text-decoration: underline;
+      }
+    }
+
+  }
 
 
 
+}
+
+.pageTitle {
+  font-size: 25px;
+
+  margin-bottom: 5px;
+
+
+  &:empty {
+    display: none;
+  }
+}
+
+#page_load_time {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 100;
+  background: black;
+  padding: 2px 7px;
+  font-size: 11px;
+  color: white;
 }
