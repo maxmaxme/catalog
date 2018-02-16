@@ -35,17 +35,20 @@ if ($goods['items']) {
 
 
 	$content = <<<HTML
+		
+		<p><a href="/manage.php?act=add" target="_blank"><i class="fas fa-plus"></i> Добавить товар</a></p>
 
 		<div class="sorting">
 			<b>Сортировать по:</b>
 			{$sortingList}
 		</div>
+		
 	
 		<div class="goods">
 HTML;
 
 	$content .= implode('', array_map(function ($good) {
-		return getGoodBlock($good);
+		return getTemplate('goods_item', $good);
 	}, $goods['items']));
 
 	if ($goods['more'])

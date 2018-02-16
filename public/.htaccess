@@ -1,0 +1,8 @@
+Options -Indexes
+
+RewriteEngine on
+
+RewriteBase /
+
+RewriteRule ^API/([\w.]+)/?$ /utils/api.php?method=$1 [QSA]
+RewriteRule ^scripts/templates.js$  /utils/templates.php [QSA]

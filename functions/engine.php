@@ -40,6 +40,8 @@ function getMysqli() {
  */
 function getTemplate($template, $data = []) {
 
+	//todo memcached
+
 	ob_start();
 	require TEMPLATES . $template . '.html';
 	$template = ob_get_clean();

@@ -1,0 +1,23 @@
+<form class="goods_manage" method="post">
+
+	<div class="input">
+		<label for="name">Название</label>
+		<input type="text" name="name" id="name" value="{{Name}}" maxlength="50">
+	</div>
+	<div class="input">
+		<label for="description">Описание</label>
+		<textarea name="description" id="description" maxlength="400" rows="3">{{Description}}</textarea>
+	</div>
+	<div class="input">
+		<label for="price">Цена</label>
+		<input type="number" name="price" id="price" value="{{Price}}" step="0.01">
+	</div>
+	<div class="input">
+		<label for="photo">Фото</label>
+		<input type="text" name="photo" id="photo" value="{{PhotoURL}}">
+	</div>
+	<div class="input">
+		<input type="submit" value="Сохранить">
+	</div>
+
+</form>

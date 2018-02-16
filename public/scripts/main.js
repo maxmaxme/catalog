@@ -8,7 +8,7 @@ $(function () {
 
 function api(method, params, successCallback, errorCallback) {
 
-    $.post('/api.php?method=' + method, params)
+    $.post('/API/' + method, params)
         .done(function(data) {
             if (data['success']) {
                 if (successCallback)
@@ -41,11 +41,7 @@ function initLoadMoreBtn() {
         }, function (goods) {
             $.each(goods['items'], function (i, good) {
 
-                // todo переделать это на что-то адекватное
-                $btn.before('<div class="good_item"><div class="photo"><img src="' + good['PhotoURL'] + '">\n' +
-                    '</div><div class="name"><a href="/show.php?id=' + good['ID'] + '" target="_blank">' +
-                    good['Name'] + '</a></div><div class="price">' + good['Price'] + '₽</div></div>');
-
+                $btn.before(getTemplate('goods_item', good));
 
             });
 
@@ -59,4 +55,11 @@ function initLoadMoreBtn() {
 
 
     });
+}
+
+
+function getTemplate(template, data) {
+    return templates[template].replace(/{{([A-z0-9]+)}}/g, function(original, val) {
+        return data[val] ? data[val] : '';
+    })
 }
