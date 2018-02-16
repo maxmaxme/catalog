@@ -95,6 +95,8 @@ form.goods_manage {
       padding: 5px;
       font-size: 15px;
       outline: none;
+      box-sizing: border-box;
+
       &:focus {
         outline: 1px solid @default-grey-color;
       }
@@ -111,6 +113,13 @@ form.goods_manage {
     background: rgba(255, 0, 0, 0.24);
     border: 1px solid red;
     margin: 5px 0;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .deleteButton {
 
     &:empty {
       display: none;

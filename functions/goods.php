@@ -30,7 +30,7 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 
 
 	$more = 0;
-	$perPage = 20;
+	$perPage = 50;
 	$items = [];
 	$limit = ($page - 1) * $perPage;
 

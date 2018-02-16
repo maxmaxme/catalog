@@ -103,6 +103,7 @@ switch ($act) {
 
 				$title = 'Редактирование товара';
 				$goodInfo['error'] = $error;
+				$goodInfo['DeleteButton'] = 'Удалить';
 				$content = getTemplate('goods_manage', $goodInfo);
 
 			}
