@@ -51,3 +51,12 @@ function getTemplate($template, $data = []) {
 
 
 }
+
+
+function varInt($paramName) {
+	return $_REQUEST[$paramName] ? intval($_REQUEST[$paramName]) : null;
+}
+
+function varStr($paramName) {
+	return $_REQUEST[$paramName] ? htmlspecialchars($_REQUEST[$paramName]) : null;
+}

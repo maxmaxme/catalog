@@ -38,11 +38,16 @@ HTML;
 /**
  * Возвращает список товаров
  * @param int $page страница. от 1
- * @param int $order имя столбца для сортировки
- * @param int $orderType ASC/DESC
+ * @param string $sorting имя столбца для сортировки
+ * @param string $sortingType ASC/DESC
  * @return array
  */
-function getGoods($page, $order, $orderType) {
+function getGoods($page = 1, $sorting = '', $sortingType = 'ASC') {
+
+
+	$sorting = in_array($sorting, array_keys(_sorting)) ? $sorting : array_keys(_sorting)[0];
+	$sortingType = in_array($sortingType, _sorting_types) ? $sortingType : _sorting_types[0];
+
 
 	$mysqli = getMysqli();
 
@@ -67,7 +72,7 @@ function getGoods($page, $order, $orderType) {
 			1
 			
 		ORDER BY 
-			g.{$order} {$orderType}
+			g.{$sorting} {$sortingType}
 			
 		LIMIT 
 			{$limit}, {$perPage}
@@ -81,7 +86,10 @@ function getGoods($page, $order, $orderType) {
 		$total_count > $limit + $perPage;
 
 	return [
+		'sorting' => $sorting,
+		'sorting_type' => $sortingType,
 		'items' => $goods->fetch_all(MYSQLI_ASSOC),
 		'more' =>  $more
 	];
 }
+

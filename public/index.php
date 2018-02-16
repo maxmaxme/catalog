@@ -1,52 +1,45 @@
 <?php
 
-require '../config.php';
+require_once '../config.php';
 
-$orders = [
-	'ID' => 'ID',
-	'Price' => 'Цене'
-];
+$goods = getGoods(1, varStr('sorting'), varStr('sorting_type'));
 
-$orderTypes = ['ASC', 'DESC'];
-
-$curOrder = in_array($_GET['order'], array_keys($orders)) ? $_GET['order'] : array_keys($orders)[0];
-$curOrderType = in_array($_GET['orderType'], $orderTypes) ? $_GET['orderType'] : $orderTypes[0];
-
-
-$goods = getGoods(1, $curOrder, $curOrderType);
+$sorting = $goods['sorting'];
+$sorting_type = $goods['sorting_type'];
 
 
 if ($goods['items']) {
 
 	// формирование кнопок для сортировки
-	$ordersList = implode(' или ', array_map(function ($key) use ($orders, $orderTypes, $curOrder, $curOrderType) {
+	$sortingList = implode(' или ', array_map(function ($key) use ($sorting, $sorting_type) {
 
 		$class = '';
 
 		// Если это текущая сортировка — меняем ASC на DESC и наоборот
-		if ($key == $curOrder) {
+		if ($key == $sorting) {
 
-			$curTypeID = array_search($curOrderType, $orderTypes);
-			unset($orderTypes[$curTypeID]);
+			$type = ($sorting_type == _sorting_types[0]) ?
+				_sorting_types[1] : _sorting_types[0];
 
 			$class = 'selected';
 
+		} else {
+
+			$type = _sorting_types[0];
+
 		}
 
-		$type = array_shift($orderTypes);
+		$sortingLink = '?sorting=' . $key . '&sorting_type=' . $type;
+		return '<a class="' . $class . '" href="' . $sortingLink . '">' . _sorting[$key] . '</a>';
 
-		$order = '?order=' . $key . '&orderType=' . $type;
-
-		return "<a class='{$class}' href='{$order}'>{$orders[$key]}</a>";
-
-	}, array_keys($orders)));
+	}, array_keys(_sorting)));
 
 
 	$content = <<<HTML
 
-		<div class="order">
+		<div class="sorting">
 			<b>Сортировать по:</b>
-			{$ordersList}
+			{$sortingList}
 		</div>
 	
 		<div class="goods">
