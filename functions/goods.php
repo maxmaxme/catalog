@@ -20,10 +20,13 @@ HTML;
 
 }
 
-function getMoreBlock() {
+function getMoreBlock($nextPage, $sorting, $sorting_type) {
 	return <<<HTML
 	
-		<div class="good_more_button">
+		<div class="good_more_button" 
+			data-next-page="{$nextPage}" 
+			data-sorting="{$sorting}" 
+			data-sorting-type="{$sorting_type}">
 			<div class="plus">
 				+
 			</div>
@@ -39,56 +42,71 @@ HTML;
  * Возвращает список товаров
  * @param int $page страница. от 1
  * @param string $sorting имя столбца для сортировки
- * @param string $sortingType ASC/DESC
+ * @param string $sorting_type ASC/DESC
  * @return array
  */
-function getGoods($page = 1, $sorting = '', $sortingType = 'ASC') {
+function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 
 
-	$sorting = in_array($sorting, array_keys(_sorting)) ? $sorting : array_keys(_sorting)[0];
-	$sortingType = in_array($sortingType, _sorting_types) ? $sortingType : _sorting_types[0];
-
+	$more = 0;
+	$perPage = 20;
+	$items = [];
+	$limit = ($page - 1) * $perPage;
 
 	$mysqli = getMysqli();
 
-	$perPage = 50;
+	// order by XXX
+	$sorting =
+		in_array($sorting, array_keys(_sorting)) ?
+			$sorting :
+			array_keys(_sorting)[0];
 
-	$limit = ($page - 1) * $perPage;
+	// ASC/DESC
+	$sorting_type =
+		in_array($sorting_type, _sorting_types) ?
+			$sorting_type :
+			_sorting_types[0];
 
-	$limit = $limit > 0 ? $limit : 0;
 
 
-	$goods = $mysqli->query("
-		select
-				SQL_CALC_FOUND_ROWS
-				g.ID,
-				g.Name,
-				g.Description,
-				g.PhotoURL,
-				g.Price
-			from goods g
-			
-		WHERE
-			1
-			
-		ORDER BY 
-			g.{$sorting} {$sortingType}
-			
-		LIMIT 
-			{$limit}, {$perPage}
-	  
-	");
+	// Защита от тех, кто пытается limit -99999,50 сделать
+	if ($limit >= 0) {
 
-	$total_count =
-		$mysqli->query('select FOUND_ROWS()')->fetch_row()[0];
+		$items =
+			$mysqli->query("
+				select
+						SQL_CALC_FOUND_ROWS
+						g.ID,
+						g.Name,
+						g.Description,
+						g.PhotoURL,
+						g.Price
+					from goods g
+					
+				WHERE
+					1
+					
+				ORDER BY 
+					g.{$sorting} {$sorting_type}
+					
+				LIMIT 
+					{$limit}, {$perPage}
+			  
+			")->fetch_all(MYSQLI_ASSOC);
 
-	$more =
-		$total_count > $limit + $perPage;
+
+		$total_count =
+			$mysqli->query('select FOUND_ROWS()')->fetch_row()[0];
+
+		$more =
+			$total_count > $limit + $perPage;
+
+	}
 
 	return [
 		'sorting' => $sorting,
-		'sorting_type' => $sortingType,
-		'items' => $goods->fetch_all(MYSQLI_ASSOC),
+		'sorting_type' => $sorting_type,
+		'items' => $items,
 		'more' =>  $more
 	];
 }

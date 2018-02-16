@@ -29,8 +29,7 @@ if ($goods['items']) {
 
 		}
 
-		$sortingLink = '?sorting=' . $key . '&sorting_type=' . $type;
-		return '<a class="' . $class . '" href="' . $sortingLink . '">' . _sorting[$key] . '</a>';
+		return '<a class="' . $class . '" href="?sorting=' . $key . '&sorting_type=' . $type . '">' . _sorting[$key] . '</a>';
 
 	}, array_keys(_sorting)));
 
@@ -49,8 +48,8 @@ HTML;
 		return getGoodBlock($good);
 	}, $goods['items']));
 
-	if (0 && $goods['more'])
-		$content .= getMoreBlock();
+	if ($goods['more'])
+		$content .= getMoreBlock(2, $sorting, $sorting_type);
 
 	$content .= '</div>';
 
