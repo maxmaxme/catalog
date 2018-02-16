@@ -5,13 +5,48 @@ require '../config.php';
 
 $act = varStr('act');
 $goodID = varInt('id');
-$errors = [];
+$error = '';
 
 switch ($act) {
 	case 'add': {
 
+		$goodInfo = [];
+
+		// Сохранена форма
+		if ($_POST) {
+
+			$goodInfo['Name'] = varStr('name');
+			$goodInfo['Description'] = varStr('description');
+			$goodInfo['Price'] = floatval(varStr('price'));
+			$goodInfo['PhotoURL'] = varStr('photo');
+
+			if ($goodInfo['Name'] && $goodInfo['Description'] && $goodInfo['Price'] && $goodInfo['PhotoURL']) {
+
+				$mysqli = getMysqli();
+
+				$mysqli->query("
+						insert into
+								goods
+							set
+								Name='{$goodInfo['Name']}',
+								Description='{$goodInfo['Description']}',
+								Price='{$goodInfo['Price']}',
+								PhotoURL='{$goodInfo['PhotoURL']}'
+					");
+
+				$goodID = $mysqli->insert_id;
+				header('Location: /manage.php?act=edit&id=' . $goodID);
+				die();
+
+			} else {
+				$error = 'Заполнены не все поля';
+			}
+
+		}
+
 		$title = 'Добавление товара';
-		$content = getTemplate('goods_manage', []);
+		$goodInfo['error'] = $error;
+		$content = getTemplate('goods_manage', $goodInfo);
 		break;
 
 	}
@@ -19,36 +54,6 @@ switch ($act) {
 
 		if ($goodID) {
 			$mysqli = getMysqli();
-
-			// Сохранена форма
-			if ($_POST) {
-
-				$name = varStr('name');
-				$description = varStr('description');
-				$price = floatval(varStr('price'));
-				$photo = varStr('photo');
-
-				if ($name && $description && $price && $photo) {
-
-					$mysqli->query("
-						update
-								goods
-							set
-								Name='{$name}',
-								Description='{$description}',
-								Price='{$price}',
-								PhotoURL='{$photo}'
-						WHERE 
-							ID='{$goodID}'
-					");
-
-				} else {
-					$errors[] = 'Заполнены не все поля';
-				}
-
-			}
-
-
 
 			$goodInfo = $mysqli->query("
 				select
@@ -65,10 +70,39 @@ switch ($act) {
 			
 			")->fetch_assoc();
 
+			// Сохранена форма
+			if ($_POST) {
+
+				$goodInfo['Name'] = varStr('name');
+				$goodInfo['Description'] = varStr('description');
+				$goodInfo['Price'] = floatval(varStr('price'));
+				$goodInfo['PhotoURL'] = varStr('photo');
+
+				if ($goodInfo['Name'] && $goodInfo['Description'] && $goodInfo['Price'] && $goodInfo['PhotoURL']) {
+
+					$mysqli->query("
+						update
+								goods
+							set
+								Name='{$goodInfo['Name']}',
+								Description='{$goodInfo['Description']}',
+								Price='{$goodInfo['Price']}',
+								PhotoURL='{$goodInfo['PhotoURL']}'
+						WHERE 
+							ID='{$goodID}'
+					");
+
+				} else {
+					$error = 'Заполнены не все поля';
+				}
+
+			}
+
 
 			if ($goodInfo) {
 
 				$title = 'Редактирование товара';
+				$goodInfo['error'] = $error;
 				$content = getTemplate('goods_manage', $goodInfo);
 
 			}
