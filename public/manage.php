@@ -1,6 +1,6 @@
 <?php
 
-require '../config.php';
+require_once '../config.php';
 
 
 $act = varStr('act');
@@ -135,6 +135,8 @@ switch ($act) {
 
 
 			if ($goods_itemInfo) {
+
+				$goods_itemInfo['Price'] = number_format($goods_itemInfo['Price'], 2, '.', '');
 
 				$title = 'Редактирование товара';
 				$goods_itemInfo['error'] = $error;

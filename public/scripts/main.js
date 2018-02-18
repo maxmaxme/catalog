@@ -1,7 +1,7 @@
 $(function () {
 
     initLoadMoreBtn();
-
+    initAutoLoadMore();
 
 });
 
@@ -43,4 +43,13 @@ function initLoadMoreBtn() {
 
 
     });
+}
+
+
+function initAutoLoadMore() {
+    window.onscroll = function() {
+        if(window.pageYOffset > document.body.offsetHeight - 1000) {
+            $('.goods_more_button').click();
+        }
+    }
 }

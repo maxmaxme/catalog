@@ -28,7 +28,13 @@ function getMysqli() {
 
 	$mysqli_config = getConfig()['db'];
 
-	return new mysqli($mysqli_config['server'], $mysqli_config['user'], $mysqli_config['pass'], $mysqli_config['db']);
+	$mysqli = new mysqli($mysqli_config['server'], $mysqli_config['user'], $mysqli_config['pass'], $mysqli_config['db']);
+
+	if ($mysqli->connect_errno) {
+		die('Connect Error (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
+	}
+
+	return $mysqli;
 
 }
 
@@ -81,8 +87,10 @@ function varInt($paramName) {
 		intval($_REQUEST[$paramName]) : null;
 }
 function varFloat($paramName) {
-	return isset($_REQUEST[$paramName]) ?
-		floatval($_REQUEST[$paramName]) : null;
+	if (isset($_REQUEST[$paramName])) {
+		return floatval(str_ireplace(',', '.', $_REQUEST[$paramName]));
+	} else
+		return null;
 }
 
 function varStr($paramName) {
