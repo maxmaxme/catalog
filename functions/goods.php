@@ -4,7 +4,7 @@
 function getMoreBlock($nextPage, $sorting, $sorting_type) {
 	return <<<HTML
 	
-		<div class="good_more_button" 
+		<div class="goods_more_button" 
 			data-next-page="{$nextPage}" 
 			data-sorting="{$sorting}" 
 			data-sorting-type="{$sorting_type}">

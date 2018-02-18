@@ -4,25 +4,25 @@ require '../config.php';
 
 
 $act = varStr('act');
-$goodID = varInt('id');
+$goods_itemID = varInt('id');
 $error = '';
 
 switch ($act) {
 	case 'add': {
 
-		$goodInfo = [];
+		$goods_itemInfo = [];
 
 		// Сохранена форма
 		if ($_POST) {
 
-			$goodInfo['Name'] = varStr('name');
-			$goodInfo['Description'] = varStr('description');
-			$goodInfo['Price'] = round(varFloat('price'), 2);
-			$goodInfo['PhotoURL'] = varStr('photo');
+			$goods_itemInfo['Name'] = varStr('name');
+			$goods_itemInfo['Description'] = varStr('description');
+			$goods_itemInfo['Price'] = round(varFloat('price'), 2);
+			$goods_itemInfo['PhotoURL'] = varStr('photo');
 
-			if ($goodInfo['Price'] > 0 && $goodInfo['Price'] < 1500000) {
+			if ($goods_itemInfo['Price'] > 0 && $goods_itemInfo['Price'] < 1500000) {
 
-				if ($goodInfo['Name'] && $goodInfo['Description'] && $goodInfo['Price'] && $goodInfo['PhotoURL']) {
+				if ($goods_itemInfo['Name'] && $goods_itemInfo['Description'] && $goods_itemInfo['Price'] && $goods_itemInfo['PhotoURL']) {
 
 					$mysqli = getMysqli();
 
@@ -30,14 +30,14 @@ switch ($act) {
 						insert into
 								goods
 							set
-								Name='{$goodInfo['Name']}',
-								Description='{$goodInfo['Description']}',
-								Price='{$goodInfo['Price']}',
-								PhotoURL='{$goodInfo['PhotoURL']}'
+								Name='{$goods_itemInfo['Name']}',
+								Description='{$goods_itemInfo['Description']}',
+								Price='{$goods_itemInfo['Price']}',
+								PhotoURL='{$goods_itemInfo['PhotoURL']}'
 					");
 
-					$goodID = $mysqli->insert_id;
-					header('Location: /manage.php?act=edit&id=' . $goodID);
+					$goods_itemID = $mysqli->insert_id;
+					header('Location: /manage.php?act=edit&id=' . $goods_itemID);
 					die();
 
 				} else {
@@ -50,17 +50,17 @@ switch ($act) {
 		}
 
 		$title = 'Добавление товара';
-		$goodInfo['error'] = $error;
-		$content = getTemplate('goods_manage', $goodInfo);
+		$goods_itemInfo['error'] = $error;
+		$content = getTemplate('goods_manage', $goods_itemInfo);
 		break;
 
 	}
 	case 'edit': {
 
-		if ($goodID) {
+		if ($goods_itemID) {
 			$mysqli = getMysqli();
 
-			$goodInfo = $mysqli->query("
+			$goods_itemInfo = $mysqli->query("
 				select
 						g.ID,
 						g.Name,
@@ -71,32 +71,32 @@ switch ($act) {
 					from goods g 
 				
 				WHERE 
-					g.ID='{$goodID}'
+					g.ID='{$goods_itemID}'
 			
 			")->fetch_assoc();
 
 			// Сохранена форма
 			if ($_POST) {
 
-				$goodInfo['Name'] = varStr('name');
-				$goodInfo['Description'] = varStr('description');
-				$goodInfo['Price'] = round(varFloat('price'), 2);
-				$goodInfo['PhotoURL'] = varStr('photo');
+				$goods_itemInfo['Name'] = varStr('name');
+				$goods_itemInfo['Description'] = varStr('description');
+				$goods_itemInfo['Price'] = round(varFloat('price'), 2);
+				$goods_itemInfo['PhotoURL'] = varStr('photo');
 
-				if ($goodInfo['Price'] > 0 && $goodInfo['Price'] < 1500000) {
+				if ($goods_itemInfo['Price'] > 0 && $goods_itemInfo['Price'] < 1500000) {
 
-					if ($goodInfo['Name'] && $goodInfo['Description'] && $goodInfo['Price'] && $goodInfo['PhotoURL']) {
+					if ($goods_itemInfo['Name'] && $goods_itemInfo['Description'] && $goods_itemInfo['Price'] && $goods_itemInfo['PhotoURL']) {
 
 						$mysqli->query("
 						update
 								goods
 							set
-								Name='{$goodInfo['Name']}',
-								Description='{$goodInfo['Description']}',
-								Price='{$goodInfo['Price']}',
-								PhotoURL='{$goodInfo['PhotoURL']}'
+								Name='{$goods_itemInfo['Name']}',
+								Description='{$goods_itemInfo['Description']}',
+								Price='{$goods_itemInfo['Price']}',
+								PhotoURL='{$goods_itemInfo['PhotoURL']}'
 						WHERE 
-							ID='{$goodID}'
+							ID='{$goods_itemID}'
 					");
 
 					} else {
@@ -110,12 +110,12 @@ switch ($act) {
 			}
 
 
-			if ($goodInfo) {
+			if ($goods_itemInfo) {
 
 				$title = 'Редактирование товара';
-				$goodInfo['error'] = $error;
-				$goodInfo['DeleteButton'] = 'Удалить';
-				$content = getTemplate('goods_manage', $goodInfo);
+				$goods_itemInfo['error'] = $error;
+				$goods_itemInfo['DeleteButton'] = 'Удалить';
+				$content = getTemplate('goods_manage', $goods_itemInfo);
 
 			}
 
@@ -127,10 +127,10 @@ switch ($act) {
 
 
 
-		if ($goodID) {
+		if ($goods_itemID) {
 
 			$mysqli = getMysqli();
-			$mysqli->query("delete from goods WHERE ID='{$goodID}'");
+			$mysqli->query("delete from goods WHERE ID='{$goods_itemID}'");
 
 		}
 
@@ -150,7 +150,7 @@ if ($content) {
 	]);
 
 
-	echo '<div id="page_load_time">' . round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 5) . '</div>';
+	echo getPageLoadTime();
 
 } else {
 	echo '404';

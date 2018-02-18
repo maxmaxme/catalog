@@ -47,8 +47,8 @@ if ($goods['items']) {
 		<div class="goods">
 HTML;
 
-	$content .= implode('', array_map(function ($good) {
-		return getTemplate('goods_item', $good);
+	$content .= implode('', array_map(function ($goods_item) {
+		return getTemplate('goods_item', $goods_item);
 	}, $goods['items']));
 
 	if ($goods['more'])
@@ -68,4 +68,4 @@ echo getTemplate('base', [
 
 
 
-echo '<div id="page_load_time">' . round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 5) . '</div>';
+echo getPageLoadTime();

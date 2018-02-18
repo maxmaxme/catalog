@@ -50,6 +50,9 @@ function getMemcached() {
  */
 function getTemplate($templateName, $data = []) {
 
+	$data['fileVersionsJs'] = fileVersions['js'];
+	$data['fileVersionsCss'] = fileVersions['css'];
+
 	$memcached = getMemcached();
 
 	$templatePath = TEMPLATES . $templateName . '.html';
@@ -81,4 +84,9 @@ function varFloat($paramName) {
 function varStr($paramName) {
 	return isset($_REQUEST[$paramName]) ?
 		htmlspecialchars($_REQUEST[$paramName]) : null;
+}
+
+
+function getPageLoadTime() {
+	return '<div id="page_load_time">' . round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 5) . '</div>';
 }
