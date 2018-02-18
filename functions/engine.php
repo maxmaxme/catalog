@@ -56,7 +56,7 @@ function getTemplate($templateName, $data = []) {
 	$memcached = getMemcached();
 
 	$templatePath = TEMPLATES . $templateName . '.html';
-	$memcachedKey = 'template_' . $templatePath;
+	$memcachedKey = 'php_templates_' . fileVersions['templates'] . '_' . $templatePath;
 
 	if (!$template = $memcached->get($memcachedKey)) {
 		$template = file_get_contents($templatePath);

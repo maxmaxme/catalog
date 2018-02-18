@@ -15,9 +15,9 @@ $files = scandir(TEMPLATES);
 
 
 $memcached = getMemcached();
-$allowed_templates_hash = md5(serialize($allowed_templates) . serialize($files));
+$templates_hash = 'js_templates_' . fileVersions['templates'];
 
-if (!$templates = $memcached->get($allowed_templates_hash)) {
+if (!$templates = $memcached->get($templates_hash)) {
 
 	$templates = [];
 
@@ -32,7 +32,7 @@ if (!$templates = $memcached->get($allowed_templates_hash)) {
 
 	$templates = json_encode($templates, 256);
 
-	$memcached->set($allowed_templates_hash, $templates, 60*60); // час
+	$memcached->set($templates_hash, $templates, 60*60); // час
 
 }
 
