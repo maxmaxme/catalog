@@ -33,7 +33,7 @@ function api(method, params, successCallback, errorCallback) {
 
 
 function initLoadMoreBtn() {
-    $('.good_more_button').click(function () {
+    $('.goods_more_button').click(function () {
 
         var $btn = $(this),
             page = $btn.attr('data-next-page'),
