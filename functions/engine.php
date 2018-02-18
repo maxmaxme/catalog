@@ -37,7 +37,11 @@ function getMemcached() {
 	$memcached_config = getConfig()['memcached'];
 
 	$memcache = new Memcached;
-	$memcache->addServer($memcached_config['server'], $memcached_config['port']) or die ("Could not connect");
+
+	if ($memcached_config['enabled']) {
+		$memcache->addServer($memcached_config['server'], $memcached_config['port'])
+			or die ("Could not connect");
+	}
 
 	return $memcache;
 }
