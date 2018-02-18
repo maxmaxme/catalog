@@ -5,7 +5,7 @@ require '../config.php';
 
 $act = varStr('act');
 $goods_itemID = varInt('id');
-$error = '';
+$error = $success = '';
 
 switch ($act) {
 	case 'add': {
@@ -20,31 +20,44 @@ switch ($act) {
 			$goods_itemInfo['Price'] = round(varFloat('price'), 2);
 			$goods_itemInfo['PhotoURL'] = varStr('photo');
 
-			if ($goods_itemInfo['Price'] > 0 && $goods_itemInfo['Price'] < 1500000) {
+			if ($goods_itemInfo['Name'] &&
+				$goods_itemInfo['Description'] &&
+				$goods_itemInfo['Price'] &&
+				$goods_itemInfo['PhotoURL']) {
 
-				if ($goods_itemInfo['Name'] && $goods_itemInfo['Description'] && $goods_itemInfo['Price'] && $goods_itemInfo['PhotoURL']) {
+				if (preg_match('/^[0-9]+(?:\.[0-9]{0,2})?$/', $goods_itemInfo['Price'])) {
 
-					$mysqli = getMysqli();
+					if (filter_var($goods_itemInfo['PhotoURL'], FILTER_VALIDATE_URL)) {
 
-					$mysqli->query("
-						insert into
-								goods
-							set
-								Name='{$goods_itemInfo['Name']}',
-								Description='{$goods_itemInfo['Description']}',
-								Price='{$goods_itemInfo['Price']}',
-								PhotoURL='{$goods_itemInfo['PhotoURL']}'
-					");
+						$mysqli = getMysqli();
 
-					$goods_itemID = $mysqli->insert_id;
-					header('Location: /manage.php?act=edit&id=' . $goods_itemID);
-					die();
+						$mysqli->query("
+							insert into
+									goods
+								set
+									Name='{$goods_itemInfo['Name']}',
+									Description='{$goods_itemInfo['Description']}',
+									Price='{$goods_itemInfo['Price']}',
+									PhotoURL='{$goods_itemInfo['PhotoURL']}'
+						");
+
+
+						$goods_itemID = $mysqli->insert_id;
+						header('Location: /manage.php?act=edit&id=' . $goods_itemID);
+						die();
+
+
+					} else {
+						$error = 'Некорректная ссылка на фотографию';
+					}
+
 
 				} else {
-					$error = 'Заполнены не все поля';
+					$error = 'Некорректная цена';
 				}
+
 			} else {
-				$error = 'Цена должна быть больше 0 и меньше 1500000';
+				$error = 'Заполнены не все поля';
 			}
 
 		}
@@ -83,28 +96,39 @@ switch ($act) {
 				$goods_itemInfo['Price'] = round(varFloat('price'), 2);
 				$goods_itemInfo['PhotoURL'] = varStr('photo');
 
-				if ($goods_itemInfo['Price'] > 0 && $goods_itemInfo['Price'] < 1500000) {
+				if ($goods_itemInfo['Name'] &&
+					$goods_itemInfo['Description'] &&
+					$goods_itemInfo['Price'] &&
+					$goods_itemInfo['PhotoURL']) {
 
-					if ($goods_itemInfo['Name'] && $goods_itemInfo['Description'] && $goods_itemInfo['Price'] && $goods_itemInfo['PhotoURL']) {
+					if (preg_match('/^[0-9]+(?:\.[0-9]{0,2})?$/', $goods_itemInfo['Price'])) {
 
-						$mysqli->query("
-						update
-								goods
-							set
-								Name='{$goods_itemInfo['Name']}',
-								Description='{$goods_itemInfo['Description']}',
-								Price='{$goods_itemInfo['Price']}',
-								PhotoURL='{$goods_itemInfo['PhotoURL']}'
-						WHERE 
-							ID='{$goods_itemID}'
-					");
+						if (filter_var($goods_itemInfo['PhotoURL'], FILTER_VALIDATE_URL)) {
+
+							$mysqli->query("
+								update
+										goods
+									set
+										Name='{$goods_itemInfo['Name']}',
+										Description='{$goods_itemInfo['Description']}',
+										Price='{$goods_itemInfo['Price']}',
+										PhotoURL='{$goods_itemInfo['PhotoURL']}'
+								WHERE 
+									ID='{$goods_itemID}'
+							");
+
+							$success = 'Сохранено';
+
+						} else {
+							$error = 'Некорректная ссылка на фотографию';
+						}
 
 					} else {
-						$error = 'Заполнены не все поля';
+						$error = 'Некорректная цена';
 					}
 
 				} else {
-					$error = 'Цена должна быть больше 0 и меньше 1500000';
+					$error = 'Заполнены не все поля';
 				}
 
 			}
@@ -114,6 +138,7 @@ switch ($act) {
 
 				$title = 'Редактирование товара';
 				$goods_itemInfo['error'] = $error;
+				$goods_itemInfo['success'] = $success;
 				$goods_itemInfo['DeleteButton'] = 'Удалить';
 				$content = getTemplate('goods_manage', $goods_itemInfo);
 

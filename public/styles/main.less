@@ -148,6 +148,18 @@ form.goods_manage {
     }
   }
 
+  .success_block {
+
+    padding: 5px;
+    background: #87CB16;
+    border: 1px solid #73ae13;
+    margin: 5px 0;
+
+    &:empty {
+      display: none;
+    }
+  }
+
   .deleteButton {
 
     &:empty {
@@ -157,6 +169,7 @@ form.goods_manage {
 }
 
 .btn {
+  font-family: "Helvetica", "Arial", sans-serif;
   display: inline-block;
   cursor: pointer;
   border: 1px solid @default-grey-color;

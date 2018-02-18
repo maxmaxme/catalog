@@ -48,11 +48,19 @@ if ($goods['items']) {
 HTML;
 
 	$content .= implode('', array_map(function ($goods_item) {
+
+		$goods_item['Price'] = number_format($goods_item['Price'], 0, '.', ' ');
+
 		return getTemplate('goods_item', $goods_item);
 	}, $goods['items']));
 
 	if ($goods['more'])
-		$content .= getMoreBlock(2, $sorting, $sorting_type);
+		$content .= getTemplate('goods_getMore', [
+			'nextPage' => 2,
+			'sorting' => $sorting,
+			'sorting_type' => $sorting_type
+		]);
+
 
 	$content .= '</div>';
 

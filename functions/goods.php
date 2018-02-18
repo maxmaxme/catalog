@@ -1,24 +1,5 @@
 <?php
 
-
-function getMoreBlock($nextPage, $sorting, $sorting_type) {
-	return <<<HTML
-	
-		<div class="goods_more_button" 
-			data-next-page="{$nextPage}" 
-			data-sorting="{$sorting}" 
-			data-sorting-type="{$sorting_type}">
-			<div class="plus">
-				+
-			</div>
-			<div>Загрузить еще 50</div>
-		</div>
-
-HTML;
-
-}
-
-
 /**
  * Возвращает список товаров
  * @param int $page страница. от 1
