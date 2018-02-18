@@ -36,7 +36,7 @@ if ($goods['items']) {
 
 	$content = <<<HTML
 		
-		<p><a href="/manage.php?act=add" target="_blank" class="btn btn-info"><i class="fas fa-plus"></i> Добавить товар</a></p>
+		<p><a href="/manage.php?act=add" target="_blank" class="btn btn-info">Добавить товар</a></p>
 
 		<div class="sorting">
 			<b>Сортировать по:</b>
