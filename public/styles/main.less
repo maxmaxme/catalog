@@ -10,7 +10,6 @@ body {
   font-family: "Helvetica", "Arial", sans-serif;
 
   width: 100%;
-  max-width: 1300px;
   margin: 10px auto 5px;
 
   .goods {
@@ -18,8 +17,41 @@ body {
     margin-top: 10px;
 
     display: grid;
-    grid-gap: 5px;
-    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+
+    a {
+
+      text-decoration: none;
+      color: @default-black-color;
+
+      .good_item {
+        border: 1px solid @default-grey-color;
+        border-radius: 2px;
+
+        height: 100%;
+
+        .photo {
+          height: 300px;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        .name {
+          padding: 10px 10px 5px;
+          font-weight: bold;
+        }
+
+        .price {
+          padding: 5px 10px 10px;
+        }
+
+      }
+    }
 
     .goods_more_button {
 
@@ -85,7 +117,7 @@ form.goods_manage {
     label {
       display: block;
     }
-    input, textarea {
+    input[type=text],input[type=number], textarea {
       margin-top: 3px;
       width: 100%;
       border: 1px solid #cecece;
@@ -122,4 +154,32 @@ form.goods_manage {
       display: none;
     }
   }
+}
+
+.btn {
+  display: inline-block;
+  cursor: pointer;
+  border: 1px solid @default-grey-color;
+  border-radius: 4px;
+  outline: none;
+  padding: 5px 10px;
+  font-size: 15px;
+  text-decoration: none;
+
+  &-success {
+    background: #87CB16;
+    border-color: #73ae13;
+    color: white;
+  }
+  &-danger {
+    background: #FF4A55;
+    border-color: #c73a42;
+    color: white;
+  }
+  &-info {
+    background: #85bbff;
+    border-color: #6e9ad2;
+    color: white;
+  }
+
 }

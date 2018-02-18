@@ -143,6 +143,9 @@ switch ($act) {
 
 if ($content) {
 
+	echo '<a href="/" class="btn btn-info">К списку</a>';
+
+
 	echo getTemplate('base', [
 		'title' => $title,
 		'pageTitle' => $title,
