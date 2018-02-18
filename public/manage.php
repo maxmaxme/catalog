@@ -3,6 +3,39 @@
 require_once '../config.php';
 
 
+function isValidParams($goods_itemInfo = []) {
+
+	$goods_itemInfo['Name'] = varStr('name');
+	$goods_itemInfo['Description'] = varStr('description');
+	$goods_itemInfo['Price'] = round(varFloat('price'), 2);
+	$goods_itemInfo['PhotoURL'] = varStr('photo');
+
+
+	if ($goods_itemInfo['Name'] &&
+		$goods_itemInfo['Description'] &&
+		$goods_itemInfo['Price'] &&
+		$goods_itemInfo['PhotoURL']) {
+
+		if (preg_match('/^[0-9]+(?:\.[0-9]{0,2})?$/', $goods_itemInfo['Price'])) {
+
+			if (filter_var($goods_itemInfo['PhotoURL'], FILTER_VALIDATE_URL)) {
+
+			} else {
+				$goods_itemInfo['error'] = 'Некорректная ссылка на фотографию';
+			}
+
+		} else {
+			$goods_itemInfo['error'] = 'Некорректная цена';
+		}
+
+	} else {
+		$goods_itemInfo['error'] = 'Заполнены не все поля';
+	}
+
+	return $goods_itemInfo;
+}
+
+
 $act = varStr('act');
 $goods_itemID = varInt('id');
 $error = $success = '';
@@ -15,49 +48,29 @@ switch ($act) {
 		// Сохранена форма
 		if ($_POST) {
 
-			$goods_itemInfo['Name'] = varStr('name');
-			$goods_itemInfo['Description'] = varStr('description');
-			$goods_itemInfo['Price'] = round(varFloat('price'), 2);
-			$goods_itemInfo['PhotoURL'] = varStr('photo');
+			$goods_itemInfo = isValidParams();
 
-			if ($goods_itemInfo['Name'] &&
-				$goods_itemInfo['Description'] &&
-				$goods_itemInfo['Price'] &&
-				$goods_itemInfo['PhotoURL']) {
+			if (!$goods_itemInfo['error']) {
 
-				if (preg_match('/^[0-9]+(?:\.[0-9]{0,2})?$/', $goods_itemInfo['Price'])) {
+				$mysqli = getMysqli();
 
-					if (filter_var($goods_itemInfo['PhotoURL'], FILTER_VALIDATE_URL)) {
-
-						$mysqli = getMysqli();
-
-						$mysqli->query("
-							insert into
-									goods
-								set
-									Name='{$goods_itemInfo['Name']}',
-									Description='{$goods_itemInfo['Description']}',
-									Price='{$goods_itemInfo['Price']}',
-									PhotoURL='{$goods_itemInfo['PhotoURL']}'
-						");
+				$mysqli->query("
+					insert into
+							goods
+						set
+							Name='{$goods_itemInfo['Name']}',
+							Description='{$goods_itemInfo['Description']}',
+							Price='{$goods_itemInfo['Price']}',
+							PhotoURL='{$goods_itemInfo['PhotoURL']}'
+				");
 
 
-						$goods_itemID = $mysqli->insert_id;
-						header('Location: /manage.php?act=edit&id=' . $goods_itemID);
-						die();
-
-
-					} else {
-						$error = 'Некорректная ссылка на фотографию';
-					}
-
-
-				} else {
-					$error = 'Некорректная цена';
-				}
+				$goods_itemID = $mysqli->insert_id;
+				header('Location: /manage.php?act=edit&id=' . $goods_itemID);
+				die();
 
 			} else {
-				$error = 'Заполнены не все поля';
+				$error = $goods_itemInfo['error'];
 			}
 
 		}
@@ -91,44 +104,26 @@ switch ($act) {
 			// Сохранена форма
 			if ($_POST) {
 
-				$goods_itemInfo['Name'] = varStr('name');
-				$goods_itemInfo['Description'] = varStr('description');
-				$goods_itemInfo['Price'] = round(varFloat('price'), 2);
-				$goods_itemInfo['PhotoURL'] = varStr('photo');
+				$goods_itemInfo = isValidParams($goods_itemInfo);
 
-				if ($goods_itemInfo['Name'] &&
-					$goods_itemInfo['Description'] &&
-					$goods_itemInfo['Price'] &&
-					$goods_itemInfo['PhotoURL']) {
+				if (!$goods_itemInfo['error']) {
 
-					if (preg_match('/^[0-9]+(?:\.[0-9]{0,2})?$/', $goods_itemInfo['Price'])) {
+					$mysqli->query("
+						update
+								goods
+							set
+								Name='{$goods_itemInfo['Name']}',
+								Description='{$goods_itemInfo['Description']}',
+								Price='{$goods_itemInfo['Price']}',
+								PhotoURL='{$goods_itemInfo['PhotoURL']}'
+						WHERE 
+							ID='{$goods_itemID}'
+					");
 
-						if (filter_var($goods_itemInfo['PhotoURL'], FILTER_VALIDATE_URL)) {
-
-							$mysqli->query("
-								update
-										goods
-									set
-										Name='{$goods_itemInfo['Name']}',
-										Description='{$goods_itemInfo['Description']}',
-										Price='{$goods_itemInfo['Price']}',
-										PhotoURL='{$goods_itemInfo['PhotoURL']}'
-								WHERE 
-									ID='{$goods_itemID}'
-							");
-
-							$success = 'Сохранено';
-
-						} else {
-							$error = 'Некорректная ссылка на фотографию';
-						}
-
-					} else {
-						$error = 'Некорректная цена';
-					}
+					$success = 'Сохранено';
 
 				} else {
-					$error = 'Заполнены не все поля';
+					$error = $goods_itemInfo['error'];
 				}
 
 			}
@@ -151,8 +146,6 @@ switch ($act) {
 
 	}
 	case 'delete': {
-
-
 
 		if ($goods_itemID) {
 
