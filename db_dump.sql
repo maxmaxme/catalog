@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 15, 2018 at 09:19 PM
+-- Generation Time: Feb 18, 2018 at 11:00 PM
 -- Server version: 5.6.35
 -- PHP Version: 7.1.8
 
@@ -40,7 +40,8 @@ CREATE TABLE `goods` (
 ALTER TABLE `goods`
   ADD PRIMARY KEY (`ID`),
   ADD KEY `Price` (`Price`),
-  ADD KEY `ID` (`ID`);
+  ADD KEY `ID` (`ID`),
+  ADD KEY `Name` (`Name`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -50,4 +51,4 @@ ALTER TABLE `goods`
 -- AUTO_INCREMENT for table `goods`
 --
 ALTER TABLE `goods`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5001;
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
