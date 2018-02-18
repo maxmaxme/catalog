@@ -8,8 +8,15 @@ $(function () {
 
 function api(method, params, successCallback, errorCallback) {
 
+    var ajaxTime= new Date().getTime();
+
     $.post('/API/' + method, params)
         .done(function(data) {
+
+            var totalTime = new Date().getTime()-ajaxTime;
+
+            $('#page_load_time').append('<br>' + totalTime + 'ms');
+
             if (data['success']) {
                 if (successCallback)
                     successCallback(data['result']);
@@ -33,25 +40,32 @@ function initLoadMoreBtn() {
             sorting = $btn.data('sorting'),
             sorting_type = $btn.data('sorting-type');
 
+        if (!$btn.attr('disabled')) {
 
-        api('getGoods', {
-            page: page,
-            sorting: sorting,
-            sorting_type: sorting_type
-        }, function (goods) {
-            $.each(goods['items'], function (i, good) {
+            $btn.attr('disabled', true);
 
-                $btn.before(getTemplate('goods_item', good));
+
+            api('getGoods', {
+                page: page,
+                sorting: sorting,
+                sorting_type: sorting_type
+            }, function (goods) {
+
+                $btn.attr('disabled', false);
+
+                $.each(goods['items'], function (i, good) {
+                    $btn.before(getTemplate('goods_item', good));
+                });
+
+                if (goods['more']) {
+                    $btn.attr('data-next-page', ++page);
+                } else {
+                    $btn.remove();
+                }
 
             });
 
-            if (goods['more']) {
-                $btn.attr('data-next-page', ++page);
-            } else {
-                $btn.remove();
-            }
-
-        });
+        }
 
 
     });

@@ -32,22 +32,36 @@ function getMysqli() {
 
 }
 
+function getMemcached() {
+
+	$memcached_config = getConfig()['memcached'];
+
+	$memcache = new Memcached;
+	$memcache->addServer($memcached_config['server'], $memcached_config['port']) or die ("Could not connect");
+
+	return $memcache;
+}
+
 /**
  * Заменяем в шаблоне все места вида {{key}} на значения массива $data['key']
- * @param string $template имя шаблона из templates без .html
+ * @param string $templateName имя шаблона из templates без .html
  * @param array $data Значения
  * @return string
  */
-function getTemplate($template, $data = []) {
+function getTemplate($templateName, $data = []) {
 
-	//todo memcached
+	$memcached = getMemcached();
 
-	ob_start();
-	require TEMPLATES . $template . '.html';
-	$template = ob_get_clean();
+	$templatePath = TEMPLATES . $templateName . '.html';
+	$memcachedKey = 'template_' . $templatePath;
+
+	if (!$template = $memcached->get($memcachedKey)) {
+		$template = file_get_contents($templatePath);
+		$memcached->set($memcachedKey, $template, 5 * 60); // 5 минут
+	}
 
 	return preg_replace_callback('/{{([A-z0-9]+)}}/', function ($val) use ($data) {
-		return $data[$val[1]];
+		return isset($data[$val[1]]) ? $data[$val[1]] : '';
 	}, $template);
 
 
@@ -56,9 +70,15 @@ function getTemplate($template, $data = []) {
 
 
 function varInt($paramName) {
-	return $_REQUEST[$paramName] ? intval($_REQUEST[$paramName]) : null;
+	return isset($_REQUEST[$paramName]) ?
+		intval($_REQUEST[$paramName]) : null;
+}
+function varFloat($paramName) {
+	return isset($_REQUEST[$paramName]) ?
+		floatval($_REQUEST[$paramName]) : null;
 }
 
 function varStr($paramName) {
-	return $_REQUEST[$paramName] ? htmlspecialchars($_REQUEST[$paramName]) : null;
+	return isset($_REQUEST[$paramName]) ?
+		htmlspecialchars($_REQUEST[$paramName]) : null;
 }

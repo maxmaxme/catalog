@@ -17,14 +17,16 @@ switch ($act) {
 
 			$goodInfo['Name'] = varStr('name');
 			$goodInfo['Description'] = varStr('description');
-			$goodInfo['Price'] = floatval(varStr('price'));
+			$goodInfo['Price'] = round(varFloat('price'), 2);
 			$goodInfo['PhotoURL'] = varStr('photo');
 
-			if ($goodInfo['Name'] && $goodInfo['Description'] && $goodInfo['Price'] && $goodInfo['PhotoURL']) {
+			if ($goodInfo['Price'] > 0 && $goodInfo['Price'] < 1500000) {
 
-				$mysqli = getMysqli();
+				if ($goodInfo['Name'] && $goodInfo['Description'] && $goodInfo['Price'] && $goodInfo['PhotoURL']) {
 
-				$mysqli->query("
+					$mysqli = getMysqli();
+
+					$mysqli->query("
 						insert into
 								goods
 							set
@@ -34,12 +36,15 @@ switch ($act) {
 								PhotoURL='{$goodInfo['PhotoURL']}'
 					");
 
-				$goodID = $mysqli->insert_id;
-				header('Location: /manage.php?act=edit&id=' . $goodID);
-				die();
+					$goodID = $mysqli->insert_id;
+					header('Location: /manage.php?act=edit&id=' . $goodID);
+					die();
 
+				} else {
+					$error = 'Заполнены не все поля';
+				}
 			} else {
-				$error = 'Заполнены не все поля';
+				$error = 'Цена должна быть больше 0 и меньше 1500000';
 			}
 
 		}
@@ -75,12 +80,14 @@ switch ($act) {
 
 				$goodInfo['Name'] = varStr('name');
 				$goodInfo['Description'] = varStr('description');
-				$goodInfo['Price'] = floatval(varStr('price'));
+				$goodInfo['Price'] = round(varFloat('price'), 2);
 				$goodInfo['PhotoURL'] = varStr('photo');
 
-				if ($goodInfo['Name'] && $goodInfo['Description'] && $goodInfo['Price'] && $goodInfo['PhotoURL']) {
+				if ($goodInfo['Price'] > 0 && $goodInfo['Price'] < 1500000) {
 
-					$mysqli->query("
+					if ($goodInfo['Name'] && $goodInfo['Description'] && $goodInfo['Price'] && $goodInfo['PhotoURL']) {
+
+						$mysqli->query("
 						update
 								goods
 							set
@@ -92,8 +99,12 @@ switch ($act) {
 							ID='{$goodID}'
 					");
 
+					} else {
+						$error = 'Заполнены не все поля';
+					}
+
 				} else {
-					$error = 'Заполнены не все поля';
+					$error = 'Цена должна быть больше 0 и меньше 1500000';
 				}
 
 			}

@@ -56,7 +56,6 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 		$items =
 			$mysqli->query("
 				select
-						SQL_CALC_FOUND_ROWS
 						g.ID,
 						g.Name,
 						g.Description,
@@ -77,7 +76,12 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 
 
 		$total_count =
-			$mysqli->query('select FOUND_ROWS()')->fetch_row()[0];
+			$mysqli->query("
+				select
+						count(g.ID)
+					from goods g
+			")->fetch_row()[0];
+
 
 		$more =
 			$total_count > $limit + $perPage;

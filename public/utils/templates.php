@@ -11,23 +11,30 @@ header('Content-Type: application/json; charset=utf-8');
 $allowed_templates = [
 	'goods_item'
 ];
+$files = scandir(TEMPLATES);
 
-$templates_path = '../../templates/';
 
-$files = scandir($templates_path);
+$memcached = getMemcached();
+$allowed_templates_hash = md5(serialize($allowed_templates) . serialize($files));
 
-$templates = [];
+if (!$templates = $memcached->get($allowed_templates_hash)) {
 
-foreach ($allowed_templates as $template) {
+	$templates = [];
 
-	$file = $template . '.html';
+	foreach ($allowed_templates as $template) {
 
-	if (in_array($file, $files)) {
-		$templates[$template] = file_get_contents($templates_path . $file);
+		$file = $template . '.html';
+
+		if (in_array($file, $files)) {
+			$templates[$template] = file_get_contents(TEMPLATES . $file);
+		}
 	}
-}
 
-$templates = json_encode($templates, 256);
+	$templates = json_encode($templates, 256);
+
+	$memcached->set($allowed_templates_hash, $templates, 60*60); // час
+
+}
 
 
 echo 'var templates = ' . $templates;
