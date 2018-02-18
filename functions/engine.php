@@ -65,12 +65,14 @@ function getTemplate($templateName, $data = []) {
 
 	$memcached = getMemcached();
 
-	$templatePath = TEMPLATES . $templateName . '.html';
-	$memcachedKey = 'php_templates_' . fileVersions['templates'] . '_' . $templatePath;
+	$fileName = $templateName . '.html';
+	$templatePath = TEMPLATES . $fileName;
+	$memcachedKey = 'template_v' . fileVersions['templates'] . '_' . $fileName;
+
 
 	if (!$template = $memcached->get($memcachedKey)) {
 		$template = file_get_contents($templatePath);
-		$memcached->set($memcachedKey, $template, 5 * 60); // 5 минут
+		$memcached->set($memcachedKey, $template, 60 * 60); // на час
 	}
 
 	return preg_replace_callback('/{{([A-z0-9]+)}}/', function ($val) use ($data) {

@@ -5,36 +5,30 @@ require_once '../../config.php';
 header('Content-Type: application/json; charset=utf-8');
 
 
-//todo memcached
-
-
 $allowed_templates = [
 	'goods_item'
 ];
-$files = scandir(TEMPLATES);
 
+$templates = [];
 
 $memcached = getMemcached();
-$templates_hash = 'js_templates_' . fileVersions['templates'];
 
-if (!$templates = $memcached->get($templates_hash)) {
+foreach ($allowed_templates as $templateName) {
 
-	$templates = [];
+	$fileName = $templateName . '.html';
+	$path = TEMPLATES . $fileName;
 
-	foreach ($allowed_templates as $template) {
+	$memcachedKey = 'template_v' . fileVersions['templates'] . '_' . $fileName;
 
-		$file = $template . '.html';
-
-		if (in_array($file, $files)) {
-			$templates[$template] = file_get_contents(TEMPLATES . $file);
-		}
+	if (!$template = $memcached->get($memcachedKey)) {
+		$template = file_get_contents($path);
+		$memcached->set($memcachedKey, $template, 60 * 60); // на час
 	}
 
-	$templates = json_encode($templates, 256);
-
-	$memcached->set($templates_hash, $templates, 60*60); // час
-
+	$templates[$templateName] = $template;
 }
+
+$templates = json_encode($templates, 256);
 
 
 echo 'var templates = ' . $templates;
