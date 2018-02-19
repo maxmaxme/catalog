@@ -50,7 +50,7 @@ switch ($act) {
 
 			$goods_itemInfo = isValidParams();
 
-			if (!$goods_itemInfo['error']) {
+			if (!$error = $goods_itemInfo['error']) {
 
 				$mysqli = getMysqli();
 
@@ -69,8 +69,6 @@ switch ($act) {
 				header('Location: /manage.php?act=edit&id=' . $goods_itemID);
 				die();
 
-			} else {
-				$error = $goods_itemInfo['error'];
 			}
 
 		}
@@ -106,7 +104,7 @@ switch ($act) {
 
 				$goods_itemInfo = isValidParams($goods_itemInfo);
 
-				if (!$goods_itemInfo['error']) {
+				if (!$error = $goods_itemInfo['error']) {
 
 					$mysqli->query("
 						update
@@ -122,8 +120,6 @@ switch ($act) {
 
 					$success = 'Сохранено';
 
-				} else {
-					$error = $goods_itemInfo['error'];
 				}
 
 			}

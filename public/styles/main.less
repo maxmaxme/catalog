@@ -129,6 +129,7 @@ form.goods_manage {
       font-size: 15px;
       outline: none;
       box-sizing: border-box;
+      border-radius: 3px;
 
       &:focus {
         outline: 1px solid @default-grey-color;
@@ -177,7 +178,7 @@ form.goods_manage {
   display: inline-block;
   cursor: pointer;
   border: 1px solid @default-grey-color;
-  border-radius: 4px;
+  border-radius: 3px;
   outline: none;
   padding: 5px 10px;
   font-size: 15px;
@@ -187,16 +188,25 @@ form.goods_manage {
     background: #87CB16;
     border-color: #73ae13;
     color: white;
+    &:hover {
+      background: #7fbf15;
+    }
   }
   &-danger {
     background: #FF4A55;
     border-color: #c73a42;
     color: white;
+    &:hover {
+      background: #ed454e;
+    }
   }
   &-info {
     background: #85bbff;
     border-color: #6e9ad2;
     color: white;
+    &:hover {
+      background: #7eb2f2;
+    }
   }
 
 }
