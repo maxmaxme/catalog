@@ -13,9 +13,7 @@ define('TEMPLATES', SITE_PATH . 'templates/');
 
 
 
-$functions = array_diff(scandir(FUNCTIONS), array('..', '.'));
-
-foreach($functions as $function_file)
-	require_once FUNCTIONS . $function_file;
+require_once FUNCTIONS . 'engine.php';
+require_once FUNCTIONS . 'goods.php';
 
 require_once CFG . 'config.inc.php';
