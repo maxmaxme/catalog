@@ -2,8 +2,7 @@
 
 const _sorting = [
 	'ID' => 'ID',
-	'Price' => 'Цене',
-	'Name' => 'Названию',
+	'Price' => 'Цене'
 ];
 
 const _sorting_types = ['ASC', 'DESC'];
