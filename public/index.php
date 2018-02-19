@@ -34,32 +34,33 @@ if ($goods['items']) {
 	}, array_keys(_sorting)));
 
 
-	$content = <<<HTML
-		
+	$content = '
 		<p><a href="/manage.php?act=add" target="_blank" class="btn btn-info">Добавить товар</a></p>
 
 		<div class="sorting">
 			<b>Сортировать по:</b>
-			{$sortingList}
+			' . $sortingList . '
 		</div>
 		
 	
-		<div class="goods">
-HTML;
+		<div class="goods">';
 
-	$content .= implode('', array_map(function ($goods_item) {
+
+	foreach ($goods['items'] as $goods_item) {
 
 		$goods_item['Price'] = number_format($goods_item['Price'], 0, '.', ' ');
 
-		return getTemplate('goods_item', $goods_item);
-	}, $goods['items']));
+		$content .= getTemplate('goods_item', $goods_item);
+	}
 
-	if ($goods['more'])
+
+	if ($goods['more']) {
 		$content .= getTemplate('goods_getMore', [
 			'nextPage' => 2,
 			'sorting' => $sorting,
 			'sorting_type' => $sorting_type
 		]);
+	}
 
 
 	$content .= '</div>';
@@ -72,8 +73,6 @@ echo getTemplate('base', [
 	'pageTitle' => 'Список товаров',
 	'content' => $content
 ]);
-
-
 
 
 echo getPageLoadTime();
