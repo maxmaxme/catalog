@@ -26,6 +26,7 @@ if ($goods_item) {
 
 	$goods_item['Price'] = getPrice($goods_item['Price']);
 	$goods_item['Description'] = nl2br($goods_item['Description']);
+	$title = $goods_item['Name'];
 
 	$content = getTemplate('goods_view', $goods_item);
 }

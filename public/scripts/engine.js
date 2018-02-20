@@ -28,3 +28,15 @@ function getTemplate(template, data) {
         return data[val] ? data[val] : '';
     })
 }
+
+function getPrice(float) {
+
+    var price_parts = float.split('.'),
+        price = price_parts[0].replace(/(\d{1,3})(?=((\d{3})*)$)/g, " $1");
+
+    if (price_parts[1] !== '00')
+        price += '.' + price_parts[1];
+
+    return price;
+
+}

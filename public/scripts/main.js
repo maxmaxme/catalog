@@ -28,6 +28,9 @@ function initLoadMoreBtn() {
                 $btn.attr('disabled', false);
 
                 $.each(goods['items'], function (i, good) {
+
+                    good['Price'] = getPrice(good['Price']);
+
                     $btn.before(getTemplate('goods_item', good));
                 });
 
