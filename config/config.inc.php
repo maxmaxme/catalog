@@ -10,6 +10,6 @@ const _sorting_types = ['ASC', 'DESC'];
 
 const fileVersions = [
 	'js' => 2,
-	'css' => 4,
-	'templates' => 4
+	'css' => 5,
+	'templates' => 5
 ];
