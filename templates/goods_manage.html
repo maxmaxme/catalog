@@ -13,7 +13,7 @@
 	</div>
 	<div class="input">
 		<label for="price">Цена</label>
-		<input type="text" name="price" id="price" value="{{Price}}" pattern="[0-9,.]+" required>
+		<input type="text" name="price" id="price" value="{{Price}}" pattern="[0-9]{1,8}(?:\.[0-9]{0,2})?" required>
 	</div>
 	<div class="input">
 		<label for="photo">Фото</label>
@@ -21,7 +21,6 @@
 	</div>
 	<div class="input">
 		<input type="submit" class="btn btn-success" value="Сохранить">
-		<a href="/manage.php?act=delete&id={{ID}}" class="deleteButton btn btn-danger">{{DeleteButton}}</a>
 	</div>
 
 </form>

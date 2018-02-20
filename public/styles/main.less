@@ -1,5 +1,5 @@
 body {
-
+  margin: 0;
 }
 
 @default-grey-color: #8c8c8c;
@@ -9,8 +9,19 @@ body {
 
   font-family: "Helvetica", "Arial", sans-serif;
 
-  width: 100%;
-  margin: 10px auto 5px;
+
+  width: 800px;
+  max-width: 100%;
+  margin: 0 auto;
+
+  padding: 5px;
+  box-sizing: border-box;
+
+  &.fullWidth {
+    width: 100%;
+    margin: 10px auto 5px;
+  }
+
 
   .goods {
 
@@ -25,7 +36,7 @@ body {
       text-decoration: none;
       color: @default-black-color;
 
-      .good_item {
+      .goods_item {
         border: 1px solid @default-grey-color;
         border-radius: 2px;
 
@@ -72,6 +83,56 @@ body {
         margin-bottom: 10px;
       }
     }
+  }
+
+  .goods_view {
+
+
+    display: grid;
+    grid-template-columns: 300px 500px;
+    grid-column-gap: 10px;
+
+    &>div {
+    }
+
+    .photo {
+      border: 1px solid @default-grey-color;
+      padding: 10px;
+      height: 250px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+    }
+
+    .info {
+      padding: 10px;
+    }
+
+    .name {
+      font-weight: bold;
+      font-size: large;
+      margin-bottom: 5px;
+    }
+
+    .description {
+      text-align: justify;
+      margin-bottom: 5px;
+      overflow-wrap: break-word;
+    }
+
+    .price {
+      font-size: large;
+      margin-bottom: 15px;
+    }
+
+
   }
 
   .sorting {

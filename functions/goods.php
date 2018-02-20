@@ -76,3 +76,14 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 	];
 }
 
+function getPrice($float) {
+
+	$price_parts = explode('.', $float);
+
+	$price = number_format($price_parts[0], 0, '.', ' ');
+
+	if (intval($price_parts[1]))
+		$price .= '.' . $price_parts[1];
+
+	return $price;
+}

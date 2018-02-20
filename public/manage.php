@@ -6,7 +6,8 @@ require_once '../config.php';
 function isValidParams($goods_itemInfo = []) {
 
 	$goods_itemInfo['Name'] = varStr('name');
-	$goods_itemInfo['Description'] = varStr('description');
+	$goods_itemInfo['Description'] =
+		str_replace("\r\n", "\n", varStr('description'));
 	$goods_itemInfo['Price'] = round(varFloat('price'), 2);
 	$goods_itemInfo['PhotoURL'] = varStr('photo');
 
@@ -16,7 +17,7 @@ function isValidParams($goods_itemInfo = []) {
 		$goods_itemInfo['Price'] &&
 		$goods_itemInfo['PhotoURL']) {
 
-		if (preg_match('/^[0-9]+(?:\.[0-9]{0,2})?$/', $goods_itemInfo['Price'])) {
+		if (preg_match('/^[0-9]{1,8}(?:\.[0-9]{0,2})?$/', $goods_itemInfo['Price'])) {
 
 			if (filter_var($goods_itemInfo['PhotoURL'], FILTER_VALIDATE_URL)) {
 
@@ -118,6 +119,22 @@ switch ($act) {
 
 					$success = 'Сохранено';
 
+					$goods_itemInfo = $mysqli->query("
+							select
+									g.ID,
+									g.Name,
+									g.Description,
+									g.PhotoURL,
+									g.Price
+									
+								from goods g 
+							
+							WHERE 
+								g.ID='{$goods_itemID}' AND 
+								g.Deleted=0
+						
+						")->fetch_assoc();
+
 				}
 
 			}
@@ -130,7 +147,6 @@ switch ($act) {
 				$title = 'Редактирование товара';
 				$goods_itemInfo['error'] = $error;
 				$goods_itemInfo['success'] = $success;
-				$goods_itemInfo['DeleteButton'] = 'Удалить';
 				$content = getTemplate('goods_manage', $goods_itemInfo);
 
 			}
@@ -155,9 +171,6 @@ switch ($act) {
 }
 
 if ($content) {
-
-	echo '<a href="/" class="btn btn-info">К списку</a>';
-
 
 	echo getTemplate('base', [
 		'title' => $title,

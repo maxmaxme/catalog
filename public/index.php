@@ -48,7 +48,7 @@ if ($goods['items']) {
 
 	foreach ($goods['items'] as $goods_item) {
 
-		$goods_item['Price'] = number_format($goods_item['Price'], 0, '.', ' ');
+		$goods_item['Price'] = getPrice($goods_item['Price']);
 
 		$content .= getTemplate('goods_item', $goods_item);
 	}
@@ -71,6 +71,7 @@ if ($goods['items']) {
 echo getTemplate('base', [
 	'title' => 'Список товаров',
 	'pageTitle' => 'Список товаров',
+	'containerClass' => 'fullWidth',
 	'content' => $content
 ]);
 
