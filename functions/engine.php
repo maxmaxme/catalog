@@ -105,8 +105,8 @@ function getPageLoadTime() {
 
 function getErrorPage($errorCode) {
 	$errors = [
-		0 => 'Неизвестная ошибка',
-		404 => 'Страница не найдена'
+		0 => ['Неизвестная ошибка'],
+		404 => ['Страница не найдена', 'HTTP/1.0 404 Not Found']
 	];
 
 	if (!$errors[$errorCode])
@@ -114,10 +114,14 @@ function getErrorPage($errorCode) {
 
 	$title = 'Ошибка ' . $errorCode;
 
+	if ($errors[$errorCode][1]) {
+		header($errors[$errorCode][1]);
+	}
+
 	return getTemplate('base', [
 		'title' => $title,
 		'pageTitle' => $title,
-		'content' => $errors[$errorCode]
+		'content' => $errors[$errorCode][0]
 	]);
 
 
