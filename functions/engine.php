@@ -95,7 +95,7 @@ function varFloat($paramName) {
 
 function varStr($paramName) {
 	return isset($_REQUEST[$paramName]) ?
-		htmlspecialchars($_REQUEST[$paramName]) : null;
+		trim(htmlspecialchars($_REQUEST[$paramName])) : null;
 }
 
 
