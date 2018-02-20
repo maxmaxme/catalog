@@ -42,5 +42,5 @@ if ($content) {
 	echo getPageLoadTime();
 
 } else {
-	echo '404';
+	echo getErrorPage(404);
 }

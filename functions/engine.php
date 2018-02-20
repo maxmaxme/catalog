@@ -102,3 +102,23 @@ function varStr($paramName) {
 function getPageLoadTime() {
 	return '<div id="page_load_time">' . round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 5) . '</div>';
 }
+
+function getErrorPage($errorCode) {
+	$errors = [
+		0 => 'Неизвестная ошибка',
+		404 => 'Страница не найдена'
+	];
+
+	if (!$errors[$errorCode])
+		$errorCode = 0;
+
+	$title = 'Ошибка ' . $errorCode;
+
+	return getTemplate('base', [
+		'title' => $title,
+		'pageTitle' => $title,
+		'content' => $errors[$errorCode]
+	]);
+
+
+}
