@@ -35,7 +35,6 @@ if ($content) {
 
 	echo getTemplate('base', [
 		'title' => $title,
-		'pageTitle' => $title,
 		'content' => $content,
 	]);
 
