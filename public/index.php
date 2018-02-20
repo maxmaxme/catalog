@@ -42,6 +42,7 @@ if ($goods['items']) {
 			' . $sortingList . '
 		</div>
 		
+		<div id="params" data-sorting="' . $sorting . '" data-sorting_type="' . $sorting_type . '"></div>
 	
 		<div class="goods">';
 
@@ -51,15 +52,6 @@ if ($goods['items']) {
 		$goods_item['Price'] = getPrice($goods_item['Price']);
 
 		$content .= getTemplate('goods_item', $goods_item);
-	}
-
-
-	if ($goods['more']) {
-		$content .= getTemplate('goods_getMore', [
-			'nextPage' => 2,
-			'sorting' => $sorting,
-			'sorting_type' => $sorting_type
-		]);
 	}
 
 

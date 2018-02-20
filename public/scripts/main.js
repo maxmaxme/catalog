@@ -1,58 +1,55 @@
+var params = [];
+
 $(function () {
 
-    initLoadMoreBtn();
+    initParams();
     initAutoLoadMore();
 
 });
 
+function initParams() {
 
-function initLoadMoreBtn() {
-    $('.goods_more_button').click(function () {
+    var $paramsBlock = $('#params');
 
-        var $btn = $(this),
-            page = $btn.attr('data-next-page'),
-            sorting = $btn.data('sorting'),
-            sorting_type = $btn.data('sorting-type');
+    params['page'] = 1;
+    params['sorting'] = $paramsBlock.data('sorting');
+    params['sorting_type'] = $paramsBlock.data('sorting_type');
+}
 
-        if (!$btn.attr('disabled')) {
 
-            $btn.attr('disabled', true);
+function initAutoLoadMore() {
 
+    var inProgress = false,
+        $container = $('.container .goods');
+
+    $(window).scroll(function() {
+
+        if(!inProgress && $(window).scrollTop() + $(window).height() >= $(document).height() - 400) {
+
+            inProgress = true;
 
             api('getGoods', {
-                page: page,
-                sorting: sorting,
-                sorting_type: sorting_type
+                page: params['page'],
+                sorting: params['sorting'],
+                sorting_type: params['sorting_type']
             }, function (goods) {
 
-                $btn.attr('disabled', false);
+                params['page']++;
 
                 $.each(goods['items'], function (i, good) {
 
                     good['Price'] = getPrice(good['Price']);
 
-                    $btn.before(getTemplate('goods_item', good));
+                    $container.append(getTemplate('goods_item', good));
                 });
 
-                if (goods['more']) {
-                    $btn.attr('data-next-page', ++page);
-                } else {
-                    $btn.remove();
-                }
+                inProgress = false;
 
+            }, function () {
+                // ничего не найдено
             });
 
         }
 
-
     });
-}
-
-
-function initAutoLoadMore() {
-    window.onscroll = function() {
-        if(window.pageYOffset > document.body.offsetHeight - 1000) {
-            $('.goods_more_button').click();
-        }
-    }
 }
