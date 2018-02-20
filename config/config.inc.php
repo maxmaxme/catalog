@@ -9,7 +9,7 @@ const _sorting_types = ['ASC', 'DESC'];
 
 
 const fileVersions = [
-	'js' => 2,
+	'js' => 3,
 	'css' => 5,
 	'templates' => 5
 ];
