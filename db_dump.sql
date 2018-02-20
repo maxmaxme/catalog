@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 18, 2018 at 11:00 PM
+-- Generation Time: Feb 20, 2018 at 07:47 PM
 -- Server version: 5.6.35
 -- PHP Version: 7.1.8
 
@@ -26,8 +26,9 @@ CREATE TABLE `goods` (
   `ID` int(11) UNSIGNED NOT NULL,
   `Name` varchar(50) NOT NULL DEFAULT '',
   `Description` varchar(400) NOT NULL DEFAULT '',
-  `Price` double UNSIGNED NOT NULL,
-  `PhotoURL` varchar(100) NOT NULL DEFAULT ''
+  `Price` decimal(10,2) UNSIGNED NOT NULL,
+  `PhotoURL` varchar(100) NOT NULL DEFAULT '',
+  `Deleted` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --

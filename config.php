@@ -17,3 +17,6 @@ require_once FUNCTIONS . 'engine.php';
 require_once FUNCTIONS . 'goods.php';
 
 require_once CFG . 'config.inc.php';
+
+$memcached = getMemcached();
+$mysqli = getMysqli();

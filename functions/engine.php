@@ -42,14 +42,14 @@ function getMemcached() {
 
 	$memcached_config = getConfig()['memcached'];
 
-	$memcache = new Memcached;
+	$memcached = new Memcached;
 
 	if ($memcached_config['enabled']) {
-		$memcache->addServer($memcached_config['server'], $memcached_config['port'])
+		$memcached->addServer($memcached_config['server'], $memcached_config['port'])
 			or die ("Could not connect");
 	}
 
-	return $memcache;
+	return $memcached;
 }
 
 /**
@@ -60,10 +60,10 @@ function getMemcached() {
  */
 function getTemplate($templateName, $data = []) {
 
+	global $memcached;
+
 	$data['fileVersionsJs'] = fileVersions['js'];
 	$data['fileVersionsCss'] = fileVersions['css'];
-
-	$memcached = getMemcached();
 
 	$fileName = $templateName . '.html';
 	$templatePath = TEMPLATES . $fileName;
@@ -78,8 +78,6 @@ function getTemplate($templateName, $data = []) {
 	return preg_replace_callback('/{{([A-z0-9]+)}}/', function ($val) use ($data) {
 		return isset($data[$val[1]]) ? $data[$val[1]] : '';
 	}, $template);
-
-
 
 }
 

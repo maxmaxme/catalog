@@ -52,8 +52,6 @@ switch ($act) {
 
 			if (!$error = $goods_itemInfo['error']) {
 
-				$mysqli = getMysqli();
-
 				$mysqli->query("
 					insert into
 							goods
@@ -82,7 +80,6 @@ switch ($act) {
 	case 'edit': {
 
 		if ($goods_itemID) {
-			$mysqli = getMysqli();
 
 			$goods_itemInfo = $mysqli->query("
 				select
@@ -95,7 +92,8 @@ switch ($act) {
 					from goods g 
 				
 				WHERE 
-					g.ID='{$goods_itemID}'
+					g.ID='{$goods_itemID}' AND 
+					g.Deleted=0
 			
 			")->fetch_assoc();
 
@@ -145,8 +143,7 @@ switch ($act) {
 
 		if ($goods_itemID) {
 
-			$mysqli = getMysqli();
-			$mysqli->query("delete from goods WHERE ID='{$goods_itemID}'");
+			$mysqli->query("update goods set Deleted=1 WHERE ID='{$goods_itemID}'");
 
 		}
 

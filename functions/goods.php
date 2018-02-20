@@ -9,13 +9,12 @@
  */
 function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 
+	global $mysqli;
 
 	$more = 0;
 	$perPage = 50;
 	$items = [];
 	$limit = ($page - 1) * $perPage;
-
-	$mysqli = getMysqli();
 
 	// order by XXX
 	$sorting =
@@ -45,7 +44,7 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 					from goods g
 					
 				WHERE
-					1
+					g.Deleted=0
 					
 				ORDER BY 
 					g.{$sorting} {$sorting_type}

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @var $memcached
+ */
+
 require_once '../../config.php';
 
 header('Content-Type: application/json; charset=utf-8');
@@ -10,8 +14,6 @@ $allowed_templates = [
 ];
 
 $templates = [];
-
-$memcached = getMemcached();
 
 foreach ($allowed_templates as $templateName) {
 
