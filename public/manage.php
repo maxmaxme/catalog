@@ -65,7 +65,7 @@ switch ($act) {
 
 
 				$goods_itemID = $mysqli->insert_id;
-				header('Location: /manage.php?act=edit&id=' . $goods_itemID);
+				header('Location: /view.php?id=' . $goods_itemID);
 				die();
 
 			}
