@@ -57,6 +57,10 @@ if ($goods['items']) {
 
 	$content .= '</div>';
 
+
+
+	$content .= '<div id="loading">Загрузка...</div>';
+
 } else
 	$content = 'Ничего не найдено';
 

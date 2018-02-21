@@ -153,6 +153,14 @@ body {
 
 }
 
+#loading {
+  padding: 10px;
+  text-align: center;
+  background: #cecece;
+  margin-top: 10px;
+  display: none;
+}
+
 .pageTitle {
   font-size: 25px;
 
@@ -201,29 +209,30 @@ form.goods_manage {
       resize: none;
     }
   }
+}
 
-  .error_block {
 
-    padding: 5px;
-    background: rgba(255, 0, 0, 0.24);
-    border: 1px solid red;
-    margin: 5px 0;
+.error_block {
 
-    &:empty {
-      display: none;
-    }
+  padding: 5px;
+  background: rgba(255, 0, 0, 0.24);
+  border: 1px solid red;
+  margin: 5px 0;
+
+  &:empty {
+    display: none;
   }
+}
 
-  .success_block {
+.success_block {
 
-    padding: 5px;
-    background: #87CB16;
-    border: 1px solid #73ae13;
-    margin: 5px 0;
+  padding: 5px;
+  background: #87CB16;
+  border: 1px solid #73ae13;
+  margin: 5px 0;
 
-    &:empty {
-      display: none;
-    }
+  &:empty {
+    display: none;
   }
 }
 

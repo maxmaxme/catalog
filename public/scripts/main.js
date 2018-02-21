@@ -20,36 +20,42 @@ function initParams() {
 function initAutoLoadMore() {
 
     var inProgress = false,
-        $container = $('.container .goods');
+        $container = $('.container .goods'),
+        $loadingBlock = $('#loading');
 
-    $(window).scroll(function() {
+    if ($container[0]) {
+        $(window).scroll(function () {
 
-        if(!inProgress && $(window).scrollTop() + $(window).height() >= $(document).height() - 400) {
+            if (!inProgress && $(window).scrollTop() + $(window).height() >= $(document).height() - 400) {
 
-            inProgress = true;
+                inProgress = true;
 
-            api('getGoods', {
-                page: params['page'],
-                sorting: params['sorting'],
-                sorting_type: params['sorting_type']
-            }, function (goods) {
+                $loadingBlock.show();
 
-                params['page']++;
+                api('getGoods', {
+                    page: ++params['page'],
+                    sorting: params['sorting'],
+                    sorting_type: params['sorting_type']
+                }, function (goods) {
 
-                $.each(goods['items'], function (i, good) {
+                    $loadingBlock.hide();
 
-                    good['Price'] = getPrice(good['Price']);
 
-                    $container.append(getTemplate('goods_item', good));
+                    $.each(goods['items'], function (i, good) {
+
+                        good['Price'] = getPrice(good['Price']);
+
+                        $container.append(getTemplate('goods_item', good));
+                    });
+
+                    if (goods['more']) {
+                        inProgress = false;
+                    }
+
                 });
 
-                inProgress = false;
+            }
 
-            }, function () {
-                // ничего не найдено
-            });
-
-        }
-
-    });
+        });
+    }
 }
