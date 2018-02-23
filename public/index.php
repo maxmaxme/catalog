@@ -10,51 +10,26 @@ $sorting_type = $goods['sorting_type'];
 
 if ($goods['items']) {
 
-	$sortingList = '';
-
-	foreach (_sorting as $key => $name) {
-
-
-		// Если это текущая сортировка — меняем ASC на DESC и наоборот
-		if ($key == $sorting) {
-
-			$type = ($sorting_type == 'ASC') ? 'DESC' : 'ASC';
-			$class = 'class="selected"';
-
-		} else {
-			$type = 'ASC';
-			$class = '';
-		}
-
-		$sortingList .=
-			' <a ' . $class . ' href="?sorting=' . $key . '&sorting_type=' . $type . '">' . _sorting[$key] . '</a> ';
-
-	}
-
-	$content = '
-		<p><a href="/manage.php?act=add" target="_blank" class="btn btn-info">Добавить товар</a></p>
-
-		<div class="sorting">
-			<b>Сортировать по:</b>
-			' . $sortingList . '
-		</div>
-		
-		<div id="params" data-sorting="' . $sorting . '" data-sorting_type="' . $sorting_type . '"></div>
-	
-		<div class="goods">';
+	// html шаблон сортировки
+	$sortingList = getSortingList($sorting, $sorting_type);
+	$goodsContent = '';
 
 
+	// Goods Array to HTML
 	foreach ($goods['items'] as $goods_item) {
 
 		$goods_item['Price'] = getPrice($goods_item['Price']);
 
-		$content .= getTemplate('goods_item', $goods_item);
+		$goodsContent .= getTemplate('goods_item', $goods_item);
 	}
 
+	$content = getTemplate('goods_list', [
+		'sortingList' => $sortingList,
+		'sorting' => $sorting,
+		'sorting_type' => $sorting_type,
+		'goods' => $goodsContent
+	]);
 
-	$content .= '</div>';
-
-	$content .= '<div id="loading">Загрузка...</div>';
 
 
 } else

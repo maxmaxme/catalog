@@ -90,3 +90,30 @@ function getPrice($float) {
 
 	return $price;
 }
+
+
+function getSortingList($sorting, $sorting_type) {
+
+	$sortingList = '';
+
+	foreach (_sorting as $key => $name) {
+
+
+		// Если это текущая сортировка — меняем ASC на DESC и наоборот
+		if ($key == $sorting) {
+
+			$type = ($sorting_type == 'ASC') ? 'DESC' : 'ASC';
+			$class = 'class="selected"';
+
+		} else {
+			$type = 'ASC';
+			$class = '';
+		}
+
+		$sortingList .=
+			' <a ' . $class . ' href="?sorting=' . $key . '&sorting_type=' . $type . '">' . _sorting[$key] . '</a> ';
+
+	}
+
+	return $sortingList;
+}
