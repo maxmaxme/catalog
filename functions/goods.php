@@ -34,16 +34,23 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 						g.Description,
 						g.PhotoURL,
 						g.Price
-					from goods g
+					from goods g 
+					inner join (
 					
-				WHERE
-					g.Deleted=0
-					
-				ORDER BY 
-					g.{$sorting} {$sorting_type}
-					
-				LIMIT 
-					{$limit}, {$perPage}
+						select
+								g.ID
+							from goods g
+							
+						WHERE
+							g.Deleted=0
+							
+						ORDER BY 
+							g.{$sorting} {$sorting_type}
+							
+						LIMIT 
+							{$limit}, {$perPage}
+							
+					) g2 on g.ID=g2.ID	
 			  
 			")->fetch_all(MYSQLI_ASSOC);
 
@@ -53,6 +60,9 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 				SELECT
 						count(g.ID)
 					FROM goods g
+					
+				WHERE
+					g.Deleted=0
 			")->fetch_row()[0];
 
 
