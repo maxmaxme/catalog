@@ -1,18 +1,37 @@
 body {
   margin: 0;
+  font-family: "Helvetica", "Arial", sans-serif;
 }
 
 @default-grey-color: #8c8c8c;
 @default-black-color: #282828;
 
-.container {
+.header {
 
-  font-family: "Helvetica", "Arial", sans-serif;
+  background: @default-black-color;
+
+  a {
+    text-decoration: none;
+
+    #logo {
+      color: #fff;
+      font-size: 20px;
+      padding: 10px;
+
+    }
+
+  }
+
+
+}
+
+
+.container {
 
 
   width: 800px;
   max-width: 100%;
-  margin: 0 auto;
+  margin: 10px auto 5px;
 
   padding: 5px;
   box-sizing: border-box;
