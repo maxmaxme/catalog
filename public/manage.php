@@ -2,6 +2,8 @@
 
 require_once '../config.php';
 
+$content = '';
+
 /**
  * Проверяем поля на валидность. Если ок — возвращаем экранированные данные. Если не ок — исходный массив
  * @param array $goods_itemInfo
@@ -61,7 +63,7 @@ switch ($act) {
 
 			$goods_itemInfo = isValidParams();
 
-			if (!$goods_itemInfo['error']) {
+			if (!isset($goods_itemInfo['error'])) {
 
 				$mysqli->query("
 					insert into
@@ -102,7 +104,7 @@ switch ($act) {
 
 				$goods_itemInfo = isValidParams();
 
-				if (!$goods_itemInfo['error']) {
+				if (!isset($goods_itemInfo['error'])) {
 
 					$mysqli->query("
 						update
