@@ -9,7 +9,6 @@ require_once '../config.php';
  */
 function isValidParams($goods_itemInfo = []) {
 
-	global $mysqli;
 
 	$goods_itemInfo['Name'] = varStr('name');
 	$goods_itemInfo['Description'] = varStr('description');
@@ -25,6 +24,8 @@ function isValidParams($goods_itemInfo = []) {
 		if (preg_match('/^[0-9]{1,8}(?:\.[0-9]{0,2})?$/', $goods_itemInfo['Price'])) {
 
 			if (filter_var($goods_itemInfo['PhotoURL'], FILTER_VALIDATE_URL)) {
+
+				global $mysqli;
 
 				foreach ($goods_itemInfo as &$param)
 					$param = mysqli_real_escape_string($mysqli, $param);
