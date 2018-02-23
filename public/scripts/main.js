@@ -4,6 +4,7 @@ $(function () {
 
     initParams();
     initAutoLoadMore();
+    initTextAreaAutoSize();
 
 });
 
@@ -58,4 +59,34 @@ function initAutoLoadMore() {
 
         });
     }
+}
+
+
+function initTextAreaAutoSize() {
+
+    $('textarea.autoSize').each(function () {
+        var $this = $(this);
+
+        function resize () {
+            $this[0].style.height = 'auto';
+
+            var height = $this[0].scrollHeight + 5 + 'px';
+
+            $this[0].style.height = height;
+            $this.css('max-height', height);
+        }
+
+        function delayedResize () {
+            window.setTimeout(resize, 0);
+        }
+
+        $this.on('change', resize);
+        $this.on('cut', delayedResize);
+        $this.on('paste', delayedResize);
+        $this.on('drop', delayedResize);
+        $this.on('keydown', delayedResize);
+
+        resize();
+
+    });
 }

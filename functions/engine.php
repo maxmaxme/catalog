@@ -75,9 +75,15 @@ function getTemplate($templateName, $data = []) {
 		$memcached->set($memcachedKey, $template, 60 * 60); // на час
 	}
 
-	return preg_replace_callback('/{{([A-z0-9]+)}}/', function ($val) use ($data) {
+	$template =  preg_replace_callback('/{{{([A-z0-9]+)}}}/', function ($val) use ($data) {
 		return isset($data[$val[1]]) ? $data[$val[1]] : '';
 	}, $template);
+
+	$template =  preg_replace_callback('/{{([{}A-z0-9]+)}}/', function ($val) use ($data) {
+		return isset($data[$val[1]]) ? htmlspecialchars($data[$val[1]]) : '';
+	}, $template);
+
+	return $template;
 
 }
 
@@ -95,7 +101,7 @@ function varFloat($paramName) {
 
 function varStr($paramName) {
 	return isset($_REQUEST[$paramName]) ?
-		trim(htmlspecialchars($_REQUEST[$paramName])) : null;
+		trim($_REQUEST[$paramName]) : null;
 }
 
 

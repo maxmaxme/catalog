@@ -10,29 +10,26 @@ $sorting_type = $goods['sorting_type'];
 
 if ($goods['items']) {
 
-	// формирование кнопок для сортировки
-	$sortingList = implode(' или ', array_map(function ($key) use ($sorting, $sorting_type) {
+	$sortingList = '';
 
-		$class = '';
+	foreach (_sorting as $key => $name) {
+
 
 		// Если это текущая сортировка — меняем ASC на DESC и наоборот
 		if ($key == $sorting) {
 
-			$type = ($sorting_type == _sorting_types[0]) ?
-				_sorting_types[1] : _sorting_types[0];
-
-			$class = 'selected';
+			$type = ($sorting_type == 'ASC') ? 'DESC' : 'ASC';
+			$class = 'class="selected"';
 
 		} else {
-
-			$type = _sorting_types[0];
-
+			$type = 'ASC';
+			$class = '';
 		}
 
-		return '<a class="' . $class . '" href="?sorting=' . $key . '&sorting_type=' . $type . '">' . _sorting[$key] . '</a>';
+		$sortingList .=
+			' <a ' . $class . ' href="?sorting=' . $key . '&sorting_type=' . $type . '">' . _sorting[$key] . '</a> ';
 
-	}, array_keys(_sorting)));
-
+	}
 
 	$content = '
 		<p><a href="/manage.php?act=add" target="_blank" class="btn btn-info">Добавить товар</a></p>
@@ -57,12 +54,13 @@ if ($goods['items']) {
 
 	$content .= '</div>';
 
-
-
 	$content .= '<div id="loading">Загрузка...</div>';
+
 
 } else
 	$content = 'Ничего не найдено';
+
+$content .= getPageLoadTime();
 
 echo getTemplate('base', [
 	'title' => 'Список товаров',
@@ -70,6 +68,3 @@ echo getTemplate('base', [
 	'containerClass' => 'fullWidth',
 	'content' => $content
 ]);
-
-
-echo getPageLoadTime();

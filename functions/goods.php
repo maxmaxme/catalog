@@ -7,7 +7,8 @@
  * @param string $sorting_type ASC/DESC
  * @return array
  */
-function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
+function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
+{
 
 	global $mysqli;
 
@@ -16,18 +17,10 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 	$items = [];
 	$limit = ($page - 1) * $perPage;
 
-	// order by XXX
-	$sorting =
-		in_array($sorting, array_keys(_sorting)) ?
-			$sorting :
-			array_keys(_sorting)[0];
-
-	// ASC/DESC
-	$sorting_type =
-		in_array($sorting_type, _sorting_types) ?
-			$sorting_type :
-			_sorting_types[0];
-
+	$allowedSorting = array_keys(_sorting);
+	$key = array_search($sorting, $allowedSorting);
+	$sorting = $allowedSorting[$key];
+	$sorting_type = ($sorting_type == 'DESC') ? 'DESC' : 'ASC';
 
 
 	// Защита от тех, кто пытается limit -99999,50 сделать
@@ -57,9 +50,9 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 
 		$total_count =
 			$mysqli->query("
-				select
+				SELECT
 						count(g.ID)
-					from goods g
+					FROM goods g
 			")->fetch_row()[0];
 
 
@@ -72,7 +65,7 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC') {
 		'sorting' => $sorting,
 		'sorting_type' => $sorting_type,
 		'items' => $items,
-		'more' =>  $more
+		'more' => $more
 	];
 }
 

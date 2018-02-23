@@ -2,24 +2,33 @@
 
 require_once '../config.php';
 
-
+/**
+ * Проверяем поля на валидность. Если ок — возвращаем экранированные данные. Если не ок — исходный массив
+ * @param array $goods_itemInfo
+ * @return array
+ */
 function isValidParams($goods_itemInfo = []) {
 
-	$goods_itemInfo['Name'] = varStr('name');
-	$goods_itemInfo['Description'] =
-		str_replace("\r\n", "\n", varStr('description'));
-	$goods_itemInfo['Price'] = round(varFloat('price'), 2);
-	$goods_itemInfo['PhotoURL'] = varStr('photo');
+	global $mysqli;
 
+	$goods_itemInfo['Name'] = varStr('name');
+	$goods_itemInfo['Description'] = varStr('description');
+	$goods_itemInfo['Price'] = number_format(varFloat('price'), 2, '.', '');
+	$goods_itemInfo['PhotoURL'] = varStr('photo');
 
 	if ($goods_itemInfo['Name'] &&
 		$goods_itemInfo['Description'] &&
 		$goods_itemInfo['Price'] &&
 		$goods_itemInfo['PhotoURL']) {
 
+
 		if (preg_match('/^[0-9]{1,8}(?:\.[0-9]{0,2})?$/', $goods_itemInfo['Price'])) {
 
 			if (filter_var($goods_itemInfo['PhotoURL'], FILTER_VALIDATE_URL)) {
+
+				foreach ($goods_itemInfo as &$param)
+					$param = mysqli_real_escape_string($mysqli, $param);
+
 
 			} else {
 				$goods_itemInfo['error'] = 'Некорректная ссылка на фотографию';
@@ -39,7 +48,7 @@ function isValidParams($goods_itemInfo = []) {
 
 $act = varStr('act');
 $goods_itemID = varInt('id');
-$error = $success = '';
+$success = '';
 
 switch ($act) {
 	case 'add': {
@@ -51,7 +60,7 @@ switch ($act) {
 
 			$goods_itemInfo = isValidParams();
 
-			if (!$error = $goods_itemInfo['error']) {
+			if (!$goods_itemInfo['error']) {
 
 				$mysqli->query("
 					insert into
@@ -63,18 +72,23 @@ switch ($act) {
 							PhotoURL='{$goods_itemInfo['PhotoURL']}'
 				");
 
+				if(!$mysqli->errno) {
 
-				$goods_itemID = $mysqli->insert_id;
-				header('Location: /view.php?id=' . $goods_itemID);
-				die();
+					$goods_itemID = $mysqli->insert_id;
+					header('Location: /view.php?id=' . $goods_itemID);
+					die();
+
+				} else {
+					$goods_itemInfo['error'] = 'Неизвестная ошибка';
+				}
 
 			}
 
 		}
 
 		$title = 'Добавление товара';
-		$goods_itemInfo['error'] = $error;
 		$content = getTemplate('goods_manage', $goods_itemInfo);
+
 		break;
 
 	}
@@ -82,28 +96,12 @@ switch ($act) {
 
 		if ($goods_itemID) {
 
-			$goods_itemInfo = $mysqli->query("
-				select
-						g.ID,
-						g.Name,
-						g.Description,
-						g.PhotoURL,
-						g.Price
-						
-					from goods g 
-				
-				WHERE 
-					g.ID='{$goods_itemID}' AND 
-					g.Deleted=0
-			
-			")->fetch_assoc();
-
 			// Сохранена форма
 			if ($_POST) {
 
-				$goods_itemInfo = isValidParams($goods_itemInfo);
+				$goods_itemInfo = isValidParams();
 
-				if (!$error = $goods_itemInfo['error']) {
+				if (!$goods_itemInfo['error']) {
 
 					$mysqli->query("
 						update
@@ -117,35 +115,45 @@ switch ($act) {
 							ID='{$goods_itemID}'
 					");
 
-					$success = 'Сохранено';
+					if(!$mysqli->errno) {
 
-					$goods_itemInfo = $mysqli->query("
-							select
-									g.ID,
-									g.Name,
-									g.Description,
-									g.PhotoURL,
-									g.Price
-									
-								from goods g 
-							
-							WHERE 
-								g.ID='{$goods_itemID}' AND 
-								g.Deleted=0
-						
-						")->fetch_assoc();
+						$success = 'Сохранено';
+
+					} else {
+						$goods_itemInfo['error'] = 'Неизвестная ошибка';
+					}
+
 
 				}
 
 			}
 
+			if (!$_POST || $success) {
+
+				$goods_itemInfo = $mysqli->query("
+					select
+							g.ID,
+							g.Name,
+							g.Description,
+							g.PhotoURL,
+							g.Price
+							
+						from goods g 
+					
+					WHERE 
+						g.ID='{$goods_itemID}' AND 
+						g.Deleted=0
+				
+				")->fetch_assoc();
+
+
+			}
+
+
 
 			if ($goods_itemInfo) {
 
-				$goods_itemInfo['Price'] = number_format($goods_itemInfo['Price'], 2, '.', '');
-
 				$title = 'Редактирование товара';
-				$goods_itemInfo['error'] = $error;
 				$goods_itemInfo['success'] = $success;
 				$content = getTemplate('goods_manage', $goods_itemInfo);
 
@@ -172,14 +180,14 @@ switch ($act) {
 
 if ($content) {
 
+	$content .= getPageLoadTime();
+
 	echo getTemplate('base', [
 		'title' => $title,
 		'pageTitle' => $title,
 		'content' => $content
 	]);
 
-
-	echo getPageLoadTime();
 
 } else {
 	echo getErrorPage(404);

@@ -5,11 +5,8 @@ const _sorting = [
 	'Price' => 'Цене'
 ];
 
-const _sorting_types = ['ASC', 'DESC'];
-
-
 const fileVersions = [
-	'js' => 5,
-	'css' => 7,
-	'templates' => 5
+	'js' => 1,
+	'css' => 1,
+	'templates' => 1
 ];

@@ -22,10 +22,13 @@ $goods_item = $mysqli->query("
 		g.Deleted=0
 	")->fetch_assoc();
 
+
 if ($goods_item) {
 
+	$goods_item['Description'] = nl2br(htmlspecialchars($goods_item['Description']));
 	$goods_item['Price'] = getPrice($goods_item['Price']);
-	$goods_item['Description'] = nl2br($goods_item['Description']);
+
+
 	$title = $goods_item['Name'];
 
 	$content = getTemplate('goods_view', $goods_item);
@@ -33,13 +36,14 @@ if ($goods_item) {
 
 if ($content) {
 
+	$content .= getPageLoadTime();
+
 	echo getTemplate('base', [
 		'title' => $title,
 		'content' => $content,
 	]);
 
 
-	echo getPageLoadTime();
 
 } else {
 	echo getErrorPage(404);
