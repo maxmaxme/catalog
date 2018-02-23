@@ -26,6 +26,8 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 	// Защита от тех, кто пытается limit -99999,50 сделать
 	if ($limit >= 0) {
 
+		$limit2 = $perPage + 1;
+
 		$items =
 			$mysqli->query("
 				select
@@ -48,26 +50,14 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 							g.{$sorting} {$sorting_type}
 							
 						LIMIT 
-							{$limit}, {$perPage}
+							{$limit}, {$limit2}
 							
 					) g2 on g.ID=g2.ID	
 			  
 			")->fetch_all(MYSQLI_ASSOC);
 
-
-		$total_count =
-			$mysqli->query("
-				SELECT
-						count(g.ID)
-					FROM goods g
-					
-				WHERE
-					g.Deleted=0
-			")->fetch_row()[0];
-
-
-		$more =
-			$total_count > $limit + $perPage;
+		$more = isset($items[$perPage]);
+		$items = array_slice($items, 0, $perPage);
 
 	}
 
