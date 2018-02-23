@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 20, 2018 at 07:47 PM
+-- Generation Time: Feb 23, 2018 at 07:14 PM
 -- Server version: 5.6.35
 -- PHP Version: 7.1.8
 
@@ -42,7 +42,8 @@ ALTER TABLE `goods`
   ADD PRIMARY KEY (`ID`),
   ADD KEY `Price` (`Price`),
   ADD KEY `ID` (`ID`),
-  ADD KEY `Name` (`Name`);
+  ADD KEY `Name` (`Name`),
+  ADD KEY `Deleted` (`Deleted`);
 
 --
 -- AUTO_INCREMENT for dumped tables
