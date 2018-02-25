@@ -9,7 +9,7 @@ $content = '';
  * @param array $goods_itemInfo
  * @return array
  */
-function isValidParams($goods_itemInfo = []) {
+$isValidParams = function ($goods_itemInfo = []) {
 
 
 	$goods_itemInfo['Name'] = varStr('name');
@@ -46,7 +46,7 @@ function isValidParams($goods_itemInfo = []) {
 	}
 
 	return $goods_itemInfo;
-}
+};
 
 
 $act = varStr('act');
@@ -61,7 +61,7 @@ switch ($act) {
 		// Сохранена форма
 		if ($_POST) {
 
-			$goods_itemInfo = isValidParams();
+			$goods_itemInfo = $isValidParams();
 
 			if (!isset($goods_itemInfo['error'])) {
 
@@ -102,7 +102,7 @@ switch ($act) {
 			// Сохранена форма
 			if ($_POST) {
 
-				$goods_itemInfo = isValidParams();
+				$goods_itemInfo = $isValidParams();
 
 				if (!isset($goods_itemInfo['error'])) {
 

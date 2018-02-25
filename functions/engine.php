@@ -14,6 +14,8 @@ function getConfig() {
 		}
 	}
 
+	return [];
+
 }
 
 
@@ -53,7 +55,7 @@ function getMemcached() {
 }
 
 /**
- * Заменяем в шаблоне все места вида {{key}} на значения массива $data['key']
+ * Заменяем в шаблоне все места вида {{key}} на значения массива $data['key'], а {{{key}}} при этом не экранирует
  * @param string $templateName имя шаблона из templates без .html
  * @param array $data Значения
  * @return string
@@ -93,10 +95,8 @@ function varInt($paramName) {
 		intval($_REQUEST[$paramName]) : null;
 }
 function varFloat($paramName) {
-	if (isset($_REQUEST[$paramName])) {
-		return floatval(str_ireplace(',', '.', $_REQUEST[$paramName]));
-	} else
-		return null;
+	return isset($_REQUEST[$paramName]) ?
+		floatval(str_ireplace(',', '.', $_REQUEST[$paramName])) : null;
 }
 
 function varStr($paramName) {
