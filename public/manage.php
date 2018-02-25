@@ -5,12 +5,12 @@ require_once '../config.php';
 $content = '';
 
 /**
- * Проверяем поля на валидность. Если ок — возвращаем экранированные данные. Если не ок — исходный массив
- * @param array $goods_itemInfo
- * @return array
+ * Проверяем поля на валидность
+ * @return array result Если ок — возвращаем экранированные данные. Если не ок — исходный массив
  */
-$isValidParams = function ($goods_itemInfo = []) {
+$isValidParams = function () {
 
+	$goods_itemInfo = [];
 
 	$goods_itemInfo['Name'] = varStr('name');
 	$goods_itemInfo['Description'] = varStr('description');
