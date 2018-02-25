@@ -6,7 +6,7 @@ const _sorting = [
 ];
 
 const fileVersions = [
-	'js' => 1,
+	'js' => 2,
 	'css' => 2,
 	'templates' => 2
 ];

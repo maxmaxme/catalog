@@ -24,9 +24,14 @@ function api(method, params, successCallback, errorCallback) {
 
 
 function getTemplate(template, data) {
-    return templates[template].replace(/{{([A-z0-9]+)}}/g, function(original, val) {
+
+    var html = templates[template].replace(/{{{([A-z0-9]+)}}}/g, function(original, val) {
         return data[val] ? data[val] : '';
-    })
+    });
+
+    return html.replace(/{{([A-z0-9]+)}}/g, function(original, val) {
+        return data[val] ? escapeHtml(data[val]) : '';
+    });
 }
 
 function getPrice(float) {
@@ -39,4 +44,22 @@ function getPrice(float) {
 
     return price;
 
+}
+
+function escapeHtml (string) {
+
+    var entityMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+        '/': '&#x2F;',
+        '`': '&#x60;',
+        '=': '&#x3D;'
+    };
+
+    return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+    });
 }
