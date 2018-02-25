@@ -12,10 +12,10 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 
 	global $mysqli;
 
-	$more = 0;
+	$more = false;
 	$perPage = 50;
 	$items = [];
-	$limit = ($page - 1) * $perPage;
+	$offset = ($page - 1) * $perPage;
 
 	$allowedSorting = array_keys(_sorting);
 	$key = array_search($sorting, $allowedSorting);
@@ -24,9 +24,9 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 
 
 	// Защита от тех, кто пытается limit -99999,50 сделать
-	if ($limit >= 0) {
+	if ($offset >= 0) {
 
-		$limit2 = $perPage + 1;
+		$limit = $perPage + 1;
 
 		$items =
 			$mysqli->query("
@@ -50,7 +50,7 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 							g.{$sorting} {$sorting_type}
 							
 						LIMIT 
-							{$limit}, {$limit2}
+							{$offset}, {$limit}
 							
 					) g2 on g.ID=g2.ID	
 			  
