@@ -13,7 +13,7 @@ $isValidParams = function () {
 	$goods_itemInfo = [];
 
 	$goods_itemInfo['Name'] = varStr('name');
-	$goods_itemInfo['Description'] = varStr('description');
+	$goods_itemInfo['Description'] = str_replace("\r", '', varStr('description'));
 	$goods_itemInfo['Price'] = number_format(varFloat('price'), 2, '.', '');
 	$goods_itemInfo['PhotoURL'] = varStr('photo');
 
