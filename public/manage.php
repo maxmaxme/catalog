@@ -77,6 +77,9 @@ switch ($act) {
 
 				if(!$mysqli->errno) {
 
+					resetGoodsCache('ID');
+					resetGoodsCache('Price');
+
 					$goods_itemID = $mysqli->insert_id;
 					header('Location: /view.php?id=' . $goods_itemID);
 					die();
@@ -106,6 +109,10 @@ switch ($act) {
 
 				if (!isset($goods_itemInfo['error'])) {
 
+
+					$oldPrice = $mysqli->query("select Price from goods WHERE ID='{$goods_itemID}'")->fetch_row()[0];
+
+
 					$mysqli->query("
 						update
 								goods
@@ -119,6 +126,11 @@ switch ($act) {
 					");
 
 					if(!$mysqli->errno) {
+
+
+						if ($oldPrice != $goods_itemInfo['Price']) {
+							resetGoodsCache('Price');
+						}
 
 						$success = 'Сохранено';
 
@@ -170,7 +182,18 @@ switch ($act) {
 
 		if ($goods_itemID) {
 
-			$mysqli->query("update goods set Deleted=1 WHERE ID='{$goods_itemID}'");
+			// проверка на существование такого товара
+			$goods_item =
+				$mysqli->query("select count(*) from goods WHERE ID='{$goods_itemID}' AND Deleted=0")
+					->fetch_row()[0];
+
+			if ($goods_item) {
+
+				resetGoodsCache('ID');
+				resetGoodsCache('Price');
+
+				$mysqli->query("update goods set Deleted=1 WHERE ID='{$goods_itemID}'");
+			}
 
 		}
 

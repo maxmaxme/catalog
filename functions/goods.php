@@ -1,6 +1,42 @@
 <?php
 
 /**
+ * Возвращает версию кэша
+ * @param string $sorting Тип сортировки
+ * @return int
+ */
+function getGoodsCacheKey($sorting)
+{
+	global $memcached;
+
+	$key = $sorting . '_cache_version';
+
+	$version = $memcached->get($key);
+
+	if (!$version) {
+		$version = 1;
+		$memcached->set($key, $version);
+	}
+
+	return $version;
+
+}
+
+/**
+ * Ставит версию кэша +1 тем самым обнуляя кэш
+ * @param string $sorting Тип сортировки
+ */
+function resetGoodsCache($sorting)
+{
+	global $memcached;
+
+	$key = $sorting . '_cache_version';
+
+	$memcached->increment($key);
+}
+
+
+/**
  * Возвращает список товаров
  * @param int $page страница. от 1
  * @param string $sorting имя столбца для сортировки
@@ -10,7 +46,7 @@
 function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 {
 
-	global $mysqli;
+	global $mysqli, $memcached;
 
 	$more = false;
 	$perPage = 50;
@@ -28,6 +64,38 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 
 		$limit = $perPage + 1;
 
+		$v = getGoodsCacheKey($sorting);
+		$memcachedKey = "goodsIDs_{$sorting}{$v}_{$sorting_type}_{$offset}_{$limit}";
+
+		// ищем в кэше ID товаров, которые попадают под нашу выборку
+		if (!$IDs = $memcached->get($memcachedKey)) {
+
+			$IDs =
+				$mysqli->query("
+					select 
+							g.ID
+						from goods g
+						
+					WHERE
+						g.Deleted=0
+						
+					ORDER BY 
+						g.{$sorting} {$sorting_type}
+						
+					LIMIT 
+						{$offset}, {$limit}
+				  
+				")->fetch_all(MYSQLI_ASSOC);
+
+
+			$IDs = array_column($IDs, 'ID');
+			$IDs = implode(',', $IDs) ?: 0;
+
+			$memcached->set($memcachedKey, $IDs, 24 * 60 * 60); // сутки
+
+		}
+
+
 		$items =
 			$mysqli->query("
 				select
@@ -37,22 +105,8 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 						g.PhotoURL,
 						g.Price
 					from goods g 
-					inner join (
-					
-						select
-								g.ID
-							from goods g
-							
-						WHERE
-							g.Deleted=0
-							
-						ORDER BY 
-							g.{$sorting} {$sorting_type}
-							
-						LIMIT 
-							{$offset}, {$limit}
-							
-					) g2 on g.ID=g2.ID	
+				
+				WHERE g.ID IN ({$IDs})
 			  
 			")->fetch_all(MYSQLI_ASSOC);
 
@@ -69,7 +123,8 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 	];
 }
 
-function getPrice($float) {
+function getPrice($float)
+{
 
 	$price_parts = explode('.', $float);
 
@@ -82,7 +137,8 @@ function getPrice($float) {
 }
 
 
-function getSortingList($sorting, $sorting_type) {
+function getSortingList($sorting, $sorting_type)
+{
 
 	$sortingList = '';
 
