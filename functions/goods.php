@@ -106,7 +106,11 @@ function getGoods($page = 1, $sorting = '', $sorting_type = 'ASC')
 						g.Price
 					from goods g 
 				
-				WHERE g.ID IN ({$IDs})
+				WHERE 
+					g.ID IN ({$IDs})
+				
+				ORDER BY 
+					g.{$sorting} {$sorting_type}
 			  
 			")->fetch_all(MYSQLI_ASSOC);
 
